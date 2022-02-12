@@ -12,6 +12,6 @@
         "printWidth": 120
       }
     ],
-    "no-console": "error"
+    "no-console": "warn"
   }
 }
