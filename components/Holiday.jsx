@@ -1,15 +1,17 @@
 import { Badge, Table, Tbody, TableCaption, Thead, Tr, Th, Td } from "@chakra-ui/react"
-import { eachDayOfInterval, parseISO, getYear, isSameDay, isSaturday, isSunday } from "date-fns"
+import { eachDayOfInterval, isAfter, parseISO, getYear, isSameDay, isSaturday, isSunday } from "date-fns"
 import moize from "moize"
 import joursFeries from "@socialgouv/jours-feries"
 
-import data from "../data/app"
+import { data } from "../data/app"
 
 /*
  * Enrichit les données avec des données calculées.
  */
 function enhanceData(data) {
-  const holidays = data.holidays.map((day) => ({ ...day, days: computeDays(day) }))
+  const holidays = data.holidays
+    .sort((day1, day2) => (day1.start === day2.start ? 0 : day1.start > day2.start ? 1 : -1))
+    .map((day) => ({ ...day, days: computeDays(day) }))
   const putCP = holidays.filter((day) => day.reason === "CP").reduce((acc, day) => acc + day.days, 0)
   const leftCP = 25 - putCP
   const putRTT = holidays.filter((day) => day.reason === "RTT").reduce((acc, day) => acc + day.days, 0)
