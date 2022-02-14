@@ -1,4 +1,4 @@
-// Reason : CP (congé payé), RTT, CSS (congé sans solde)
+// Reason : CP (congé payé), RTT, CSS (congé sans solde), AM (arrêt maladie)
 
 export const data = {
   holidays: [
