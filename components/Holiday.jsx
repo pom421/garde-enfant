@@ -80,10 +80,10 @@ export default function Holiday() {
         <TableCaption></TableCaption>
         <Thead>
           <Tr>
-            <Th colspan="3" textAlign={"center"} bgColor="tomato" color="white">
+            <Th colSpan="3" textAlign={"center"} bgColor="tomato" color="white">
               CP
             </Th>
-            <Th colspan="3" textAlign={"center"} bgColor="lightblue" color="white">
+            <Th colSpan="3" textAlign={"center"} bgColor="lightblue" color="white">
               RTT
             </Th>
           </Tr>
