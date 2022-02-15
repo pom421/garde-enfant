@@ -6,5 +6,8 @@
                 "components/*"
             ]
         }
-    }
+    },
+    "include": [
+        "components"
+    ],
 }
