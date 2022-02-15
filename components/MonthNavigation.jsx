@@ -18,7 +18,7 @@ export const MonthNavigation = () => {
       <Text minWidth={150} textAlign="center">
         {currentMonthName} {currentMonth[1]}
       </Text>
-      <IconButton variant="link" aria-label="Mois précédent" icon={<ArrowRightIcon />} onClick={() => addOneMonth()} />
+      <IconButton variant="link" aria-label="Mois suivant" icon={<ArrowRightIcon />} onClick={() => addOneMonth()} />
     </Flex>
   )
 }
