@@ -25,9 +25,9 @@ import NextLink from "next/link"
 import { Footer } from "@/components/Footer"
 
 const Links = [
-  { label: "Heures du mois", href: "heures" },
-  { label: "Congés", href: "conges" },
-  { label: "Administration", href: "admin" },
+  { label: "Heures du mois", href: "/" },
+  { label: "Congés", href: "/conges" },
+  { label: "Administration", href: "/admin" },
 ]
 
 const NavLink = ({ children, href }) => (
