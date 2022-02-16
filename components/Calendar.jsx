@@ -52,3 +52,22 @@ export function Calendar() {
     </Grid>
   )
 }
+const styleWrapper = {
+  border: "3px solid",
+  borderRadius: 4,
+  display: "grid",
+  gridTemplateColumns: "repeat(7, 5rem)",
+  padding: 16,
+  gap: 4,
+  width: "min-content",
+  marginBottom: 20,
+}
+
+const styleDay = {
+  border: "2px solid",
+  borderRadius: 4,
+  height: "5rem",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+}
