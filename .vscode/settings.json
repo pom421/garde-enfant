@@ -4,6 +4,6 @@
     },
     "editor.formatOnSave": true,
     "workbench.colorCustomizations": {
-        "statusBar.background": "#e563b3e1" // Change this color!
+        "statusBar.background": "#ff6d6d" // Change this color!
     }
 }
