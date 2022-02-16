@@ -1,14 +1,21 @@
 import React from "react"
-import { format, getMonth, previousMonday, nextSunday, lastDayOfMonth, eachDayOfInterval } from "date-fns"
+import { format, getMonth, previousMonday, nextSunday, lastDayOfMonth, eachDayOfInterval, getDate } from "date-fns"
 import { useDateContext } from "./DateContext"
 import { shortFrenchMonthNames } from "./DateContext"
+import { Grid, GridItem, Text, useColorModeValue } from "@chakra-ui/react"
 
 function monthName(date) {
   return shortFrenchMonthNames[getMonth(date)]
 }
 
+function dateMonth(date) {
+  return getDate(date) + "/" + getMonth(date)
+}
+
 export function Calendar() {
   const { currentMonth } = useDateContext()
+  const colorNormalHours = useColorModeValue("gray.800", "gray.100")
+  const colorExtraHours = useColorModeValue("yellow.800", "yellow.100")
 
   const firstDayOfMonth = new Date(currentMonth[1], currentMonth[0], 1)
 
@@ -21,33 +28,27 @@ export function Calendar() {
     end: nextSundayAfterMonth,
   })
 
+  const nbWeeks = eachDayOfIntervalOfCurrentMonth.length / 7
+
   return (
-    <div style={styleWrapper}>
-      {eachDayOfIntervalOfCurrentMonth.map((day, index) => (
-        <div style={styleDay} key={index} onClick={() => console.log(`click sur ${day}`)}>
-          {format(day, "dd") + " " + monthName(day)}
-        </div>
-      ))}
-    </div>
+    <Grid templateColumns="700px calc(100%/8)" mb={20}>
+      <Grid templateColumns="repeat(7, 5rem)" gap={3}>
+        {eachDayOfIntervalOfCurrentMonth.map((day, index) => (
+          <GridItem style={styleDay} key={dateMonth} onClick={() => console.log(`click sur ${day}`)} height="5rem">
+            {format(day, "dd") + " " + monthName(day)}
+          </GridItem>
+        ))}
+      </Grid>
+      <Grid gap={3}>
+        {Array(nbWeeks)
+          .fill("")
+          .map((week, index) => (
+            <GridItem key={index} height="5rem">
+              <Text color={colorNormalHours}>40 h normales</Text>
+              <Text color={colorExtraHours}>10 h sup</Text>
+            </GridItem>
+          ))}
+      </Grid>
+    </Grid>
   )
-}
-
-const styleWrapper = {
-  border: "3px solid",
-  borderRadius: 4,
-  display: "grid",
-  gridTemplateColumns: "repeat(7, 5rem)",
-  padding: 16,
-  gap: 4,
-  width: "min-content",
-  marginBottom: 20,
-}
-
-const styleDay = {
-  border: "2px solid",
-  borderRadius: 4,
-  height: "5rem",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
 }
