@@ -8,7 +8,7 @@ export const MonthNavigation = () => {
   const { currentMonthName, currentMonth, addOneMonth, removeOneMonth } = useDateContext()
 
   return (
-    <Flex justifyContent="flex-end" mt="8">
+    <Flex justifyContent="flex-end" mt="8" mb="12" mr="16">
       <IconButton
         variant="link"
         aria-label="Mois précédent"
