@@ -11,7 +11,7 @@ export default function Home() {
         <Text mt="4" fontSize="lg">
           {"Tous les outils pour les employeurs de garde d'enfants"}
         </Text>
-        <NextLink href="/conges" passHref>
+        <NextLink href="/absences" passHref>
           <Button mt="8" as="a" href="#" size="lg" colorScheme="blue" fontWeight="bold">
             Commencer
           </Button>

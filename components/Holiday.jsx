@@ -1,37 +1,29 @@
 import { Badge, Table, Tbody, TableCaption, Thead, Tr, Th, Td } from "@chakra-ui/react"
 import { eachDayOfInterval, isAfter, parseISO, getYear, isSameDay, isSaturday, isSunday } from "date-fns"
-import moize from "moize"
-import joursFeries from "@socialgouv/jours-feries"
+import { isPublicHoliday } from "@/utils/public-holidays"
 
-import { data } from "../data/app"
+import { absences } from "../data/app"
 
 /*
  * Enrichit les données avec des données calculées.
  */
-function enhanceData(data) {
-  const holidays = data.holidays
+function absencesBuilder(data) {
+  const absences = data.absences
     .sort((day1, day2) => (day1.start === day2.start ? 0 : day1.start > day2.start ? 1 : -1))
     .map((day) => ({ ...day, days: computeDays(day) }))
-  const putCP = holidays.filter((day) => day.reason === "CP").reduce((acc, day) => acc + day.days, 0)
+  const putCP = absences.filter((day) => day.reason === "CP").reduce((acc, day) => acc + day.days, 0)
   const leftCP = 25 - putCP
-  const putRTT = holidays.filter((day) => day.reason === "RTT").reduce((acc, day) => acc + day.days, 0)
+  const putRTT = absences.filter((day) => day.reason === "RTT").reduce((acc, day) => acc + day.days, 0)
   const leftRTT = 10 - putRTT
 
   return {
     ...data,
-    holidays,
+    absences,
     putCP,
     leftCP,
     putRTT,
     leftRTT,
   }
-}
-
-const memoizedJoursFeries = (year) => Object.values(moize(joursFeries)(year))
-
-function isHoliday(day) {
-  // Est-ce que le jour fait partie des jours fériés de l'année ?
-  return memoizedJoursFeries(getYear(day)).some((holidayDay) => isSameDay(day, holidayDay))
 }
 
 function computeDays({ start, end }) {
@@ -40,7 +32,7 @@ function computeDays({ start, end }) {
   const businessDays = days
     .filter((day) => !isSaturday(day))
     .filter((day) => !isSunday(day))
-    .filter((day) => !isHoliday(day))
+    .filter((day) => !isPublicHoliday(day))
 
   return businessDays?.length
 }
@@ -49,7 +41,7 @@ function reasonBadge(reason) {
   return <Badge colorScheme={reason === "CP" ? "green" : reason === "RTT" ? "purple" : "red"}>{reason}</Badge>
 }
 
-const allData = enhanceData(data)
+const allData = absencesBuilder(absences)
 
 export default function Holiday() {
   return (
@@ -65,7 +57,7 @@ export default function Holiday() {
           </Tr>
         </Thead>
         <Tbody>
-          {allData.holidays.map((item, index) => (
+          {allData.absences.map((item, index) => (
             <Tr key={index}>
               <Td>{item.start}</Td>
               <Td>{item.end}</Td>

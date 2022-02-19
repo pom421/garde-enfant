@@ -1,13 +1,21 @@
 {
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@/components/*": [
-                "components/*"
-            ]
-        }
-    },
-    "include": [
-        "components"
-    ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/config/*": [
+        "config/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
+      ]
+    }
+  },
+  "include": [
+    "config",
+    "components",
+    "utils"
+  ],
 }

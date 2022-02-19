@@ -26,7 +26,7 @@ import { Footer } from "@/components/Footer"
 
 const Links = [
   { label: "Heures du mois", href: "/" },
-  { label: "Congés", href: "/conges" },
+  { label: "Congés", href: "/absences" },
   { label: "Administration", href: "/admin" },
 ]
 
