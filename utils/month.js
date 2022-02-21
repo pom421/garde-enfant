@@ -1,6 +1,11 @@
 import { getMonth, previousMonday, nextSunday, lastDayOfMonth, eachDayOfInterval, eachWeekOfInterval } from "date-fns"
 
-// Utilitaires pour le mois
+/**
+ * Utilitaires pour le mois
+ *
+ * @param {number} year
+ * @param {number} month 0-11
+ */
 export function utilMonth({ year, month }) {
   const firstDayOfMonth = new Date(year, month, 1)
   const previousMondayBeforeMonth = previousMonday(firstDayOfMonth)

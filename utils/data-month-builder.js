@@ -1,107 +1,130 @@
 import { isWeekend, isWithinInterval, isSameDay, parseISO } from "date-fns"
+import { formatInTimeZone, utcToZonedTime } from "date-fns-tz"
 
 import { utilMonth } from "@/utils/month"
 import { isPublicHoliday } from "@/utils/public-holidays"
-import { absences, hours } from "data/app"
 import { CAPACITY_NORMAL_HOURS, CAPACITY_EXTRA_HOURS, HOURS_REGULAR_DAY } from "@/config/index"
+import { REASONS_ABSENCE } from "@/config/index"
+import { assertDate } from "./date"
 
-// Construction de la structure de données pour le mois.
-export function buildDataMonth({ year, month }) {
-  const dataMonth = {
-    hours: {
-      normalHours: 0,
-      extraHours: 0,
-      moreExtraHours: 0,
-    },
-    lastWeekPreviousMonth: {},
-    weeks: [],
+function displayWeek(numWeek, days) {
+  // eslint-disable-next-line no-console
+  console.log("week", numWeek)
+
+  for (const day of days) {
+    // eslint-disable-next-line no-console
+    console.log(formatInTimeZone(day, "Europe/Paris", "yyyy-MM-dd"))
   }
-
-  const { lastWeekPreviousMonth, weeks } = utilMonth({ year, month })
-
-  console.log("lastWeekPreviousMonth", lastWeekPreviousMonth)
-
-  dataMonth.lastWeekPreviousMonth = {
-    days: lastWeekPreviousMonth.map((day) => ({
-      date: day,
-      nbHour: 0,
-      reasonAbsence: "",
-    })),
-    hours: {
-      capacityNormalHours: CAPACITY_NORMAL_HOURS,
-      capacityExtraHours: CAPACITY_EXTRA_HOURS,
-      totalHours: 0,
-      normalHours: 0,
-      extraHours: 0,
-      moreExtraHours: 0,
-    },
-  }
-
-  dataMonth.weeks = weeks.map((week) => ({
-    days: week.map((day) => ({
-      date: day,
-      nbHours: 0,
-      reasonAbsence: "",
-    })),
-    hours: {
-      capacityNormalHours: CAPACITY_NORMAL_HOURS,
-      capacityExtraHours: CAPACITY_EXTRA_HOURS,
-      totalHours: 0,
-      normalHours: 0,
-      extraHours: 0,
-      moreExtraHours: 0,
-    },
-  }))
-
-  lastWeekPreviousMonth.days = lastWeekPreviousMonth.map((day) => fillDay(day))
-
-  console.log("new lastWeekPreviousMonth", lastWeekPreviousMonth)
-
-  // TODO : remlpir les weeks comme lastWeekPreviousMonth
-
-  return dataMonth
 }
 
-/*
- * TODO : tester cette fonction !!!
+// Construction de la structure de données pour le mois.
+export function buildDataMonth({ hours, absences }) {
+  return function ({ year, month }) {
+    const dataMonth = {
+      meta: {
+        year,
+        month,
+        normalHours: 0,
+        extraHours: 0,
+        moreExtraHours: 0,
+      },
+      lastWeekPreviousMonth: {},
+      weeks: [],
+    }
+
+    const { lastWeekPreviousMonth, weeks } = utilMonth({ year, month })
+
+    dataMonth.lastWeekPreviousMonth = {
+      days: lastWeekPreviousMonth.map((day) => ({
+        date: day,
+        nbHour: 0,
+        reasonAbsence: "",
+      })),
+      hours: {
+        capacityNormalHours: CAPACITY_NORMAL_HOURS,
+        capacityExtraHours: CAPACITY_EXTRA_HOURS,
+        totalHours: 0,
+        normalHours: 0,
+        extraHours: 0,
+        moreExtraHours: 0,
+      },
+    }
+
+    dataMonth.weeks = weeks.map((week) => ({
+      days: week.map((day) => ({
+        date: day,
+        nbHours: 0,
+        reasonAbsence: "",
+      })),
+      hours: {
+        capacityNormalHours: CAPACITY_NORMAL_HOURS,
+        capacityExtraHours: CAPACITY_EXTRA_HOURS,
+        totalHours: 0,
+        normalHours: 0,
+        extraHours: 0,
+        moreExtraHours: 0,
+      },
+    }))
+
+    dataMonth.lastWeekPreviousMonth.days = dataMonth.lastWeekPreviousMonth.days.map((day) =>
+      fillDay({ hours, absences })(day.date),
+    )
+
+    dataMonth.weeks.forEach((week) => {
+      week.days = week.days.map((day) => fillDay({ hours, absences })(day.date))
+    })
+
+    return dataMonth
+  }
+}
+
+/**
+ * Fonction qui remplit les données du jour.
+ *
+ * @param {Object} options. hours, la liste des heures modifiées de la garde d'enfant. absences, la liste des absences de la garde d'enfant.
  */
-function fillDay(date) {
-  // la date est-elle un samedi ou dimanche?
-  if (isWeekend(date))
-    return {
-      date,
-      reasonAbsence: REASONS_ABSENCE.WE,
-    }
-  // la date est-elle un jour férié ?
-  if (isPublicHoliday(date))
-    return {
-      date,
-      reasonAbsence: REASONS_ABSENCE.PUBLIC_HOLIDAY,
-    }
+export function fillDay({ hours = [], absences = [] }) {
+  return function (date) {
+    assertDate(date)
 
-  // la date a-t-elle des heures explicites ?
-  const [entryHours] = hours.filter((hour) => isSameDay(parseISO(hour.date), date)) // on considère qu'on ne peut spécifier qu'une fois une hour.
-
-  if (entryHours)
-    return {
-      date,
-      nbHours: entryHours,
-    }
-
-  // la date est-elle une absence ?
-  absences.forEach((absence) => {
-    if (isWithinInterval(date, { start: parseISO(absence.start), end: parseISO(absence.end) })) {
+    // la date est-elle un samedi ou dimanche?
+    if (isWeekend(date))
       return {
         date,
-        reasonAbsence: absence.reason,
+        reasonAbsence: REASONS_ABSENCE.WE,
+      }
+    // la date est-elle un jour férié ?
+    if (isPublicHoliday(date))
+      return {
+        date,
+        reasonAbsence: REASONS_ABSENCE.PUBLIC_HOLIDAY,
+      }
+
+    // la date a-t-elle des heures explicites ?
+    const [entryHours] = hours.filter((hour) => isSameDay(parseISO(hour.date), date)) // on considère qu'il ne peut pas y avoir 2 entrées pour la même date.
+
+    if (entryHours) {
+      return {
+        date,
+        nbHours: entryHours.nbHours,
       }
     }
-  })
+    // la date est-elle une absence ?
+    // eslint-disable-next-line prettier/prettier
+    for (const absence of absences) {
+      if (isWithinInterval(date, { start: parseISO(absence.start), end: parseISO(absence.end) })) {
+        return {
+          date,
+          reasonAbsence: absence.reason,
+        }
+      }
+    }
 
-  // par défaut, on ajoute le nombre d'heure standard.
-  return {
-    date,
-    nbHours: HOURS_REGULAR_DAY,
+    // par défaut, on ajoute le nombre d'heure standard.
+    return {
+      date,
+      nbHours: HOURS_REGULAR_DAY,
+    }
   }
 }
 

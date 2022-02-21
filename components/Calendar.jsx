@@ -6,8 +6,7 @@ import { useDateContext } from "@/components/DateContext"
 import { shortFrenchMonthNames } from "@/components/DateContext"
 import { utilMonth } from "@/utils/month"
 import { buildDataMonth } from "@/utils/data-month-builder"
-
-// console.log("dataMonth", buildDataMonth({ year: 2022, month: 1 }))
+import { absences, hours } from "data/app"
 
 function monthName(date) {
   return shortFrenchMonthNames[getMonth(date)]
@@ -27,12 +26,10 @@ export function Calendar() {
     month: currentMonth[0],
   })
 
-  const dataMonth = buildDataMonth({
+  const dataMonth = buildDataMonth({ hours, absences })({
     year: currentMonth[1],
     month: currentMonth[0],
   })
-
-  console.log("dataMonth", dataMonth)
 
   return (
     <Grid templateColumns="700px calc(100%/8)" mb={20} justifyContent="center">
