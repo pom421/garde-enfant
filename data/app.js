@@ -61,6 +61,10 @@ export const hours = [
     nbHours: 5,
   },
   {
+    date: "2021-02-10",
+    nbHours: 5,
+  },
+  {
     date: "2021-07-16",
     nbHours: 4,
   },

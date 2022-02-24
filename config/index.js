@@ -2,7 +2,7 @@ export const CAPACITY_NORMAL_HOURS = 40
 export const CAPACITY_EXTRA_HOURS = 8
 
 export const NB_HOURS_FOR_VACATION = 8
-export const HOURS_REGULAR_DAY = 8
+export const HOURS_REGULAR_DAY = 10
 
 export const REASONS_ABSENCE = {
   WE: "WE",

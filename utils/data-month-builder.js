@@ -78,6 +78,37 @@ export function buildDataMonth({ hours, absences }) {
   }
 }
 
+export function computeHours(dataMonth) {
+  if (!dataMonth) return null
+
+  dataMonth.weeks.forEach((week) => {
+    const totalHours = week.days.reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
+    week.hours.totalHours = totalHours
+
+    const restant = week.hours.capacityNormalHours - totalHours
+
+    if (restant >= 0) {
+      week.hours.normalHours = totalHours
+      week.hours.capacityNormalHours -= totalHours
+    } else {
+      week.hours.normalHours = week.hours.capacityNormalHours
+      week.hours.capacityNormalHours = 0
+
+      const restantExtraHours = week.hours.capacityExtraHours - Math.abs(restant)
+
+      if (restantExtraHours >= 0) {
+        week.hours.extraHours = Math.abs(restant)
+        week.hours.capacityExtraHours -= Math.abs(restant)
+      } else {
+        week.hours.extraHours = week.hours.capacityExtraHours
+        week.hours.capacityExtraHours = 0
+
+        week.hours.moreExtraHours = Math.abs(restantExtraHours)
+      }
+    }
+  })
+}
+
 /**
  * Fonction qui remplit les données du jour.
  *
