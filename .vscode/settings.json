@@ -5,5 +5,10 @@
     "editor.formatOnSave": false,
     "workbench.colorCustomizations": {
         "statusBar.background": "#ff6d6d" // Change this color!
+    },
+    "files.exclude": {
+        "**/.history": true,
+        "**/.next": true,
+        "**/node_modules": true,
     }
 }
