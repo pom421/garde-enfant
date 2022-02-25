@@ -1,6 +1,13 @@
 import React from "react"
 
-const DateContext = React.createContext()
+const defaultValue = {
+  currentMonth: [new Date().getMonth(), new Date().getFullYear()],
+  currentMonthName: "",
+  addOneMonth: () => {},
+  emoveOneMonth: () => {},
+}
+
+const DateContext = React.createContext(defaultValue)
 
 export const frenchMonthNames = [
   "janvier",

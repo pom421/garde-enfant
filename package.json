@@ -18,7 +18,7 @@
     "date-fns-tz": "^1.2.2",
     "framer-motion": "^6",
     "moize": "^6.1.0",
-    "next": "12.0.10",
+    "next": "^12.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1"
@@ -31,6 +31,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.5.1",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5"
   }
 }

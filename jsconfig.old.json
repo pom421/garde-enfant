@@ -3,13 +3,13 @@
     "baseUrl": ".",
     "paths": {
       "@/components/*": [
-        "components/*"
+        "src/components/*"
       ],
       "@/config/*": [
-        "config/*"
+        "src/config/*"
       ],
       "@/utils/*": [
-        "utils/*"
+        "src/utils/*"
       ]
     }
   },

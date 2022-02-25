@@ -6,7 +6,7 @@ import { useDateContext } from "@/components/DateContext"
 import { shortFrenchMonthNames } from "@/components/DateContext"
 import { utilMonth } from "@/utils/month"
 import { buildDataMonth, computeHours } from "@/utils/data-month-builder"
-import { absences, hours } from "data/app"
+import { absences, hours } from "@/data/app"
 
 function monthName(date) {
   return shortFrenchMonthNames[getMonth(date)]
