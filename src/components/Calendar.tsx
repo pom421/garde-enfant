@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Grid, GridItem, Table, Td, Text, Tr, useColorModeValue } from "@chakra-ui/react"
+import { Box, Grid, GridItem, Table, Tbody, Td, Text, Thead, Tr, useColorModeValue } from "@chakra-ui/react"
 import { format, getMonth, getDate } from "date-fns"
 
 import { useDateContext } from "@/components/DateContext"
@@ -64,68 +64,72 @@ export function Calendar() {
     // </Grid>
 
     <Table>
-      <Tr>
-        <Td>Lundi</Td>
-        <Td>Mardi</Td>
-        <Td>Mercredi</Td>
-        <Td>Jeudi</Td>
-        <Td>Vendredi</Td>
-        <Td>Samedi</Td>
-        <Td>Dimanche</Td>
-        <Td>Résultat</Td>
-      </Tr>
-      {
+      <Thead>
         <Tr>
-          {dataMonth.lastWeekPreviousMonth.days.map((day, index) => (
-            <Td key={index}>
-              <Box>
-                <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
-                <Text>{day.nbHours ? `${day.nbHours} heures` : ""}</Text>
-                <Text>{day.reasonAbsence}</Text>
-              </Box>
-            </Td>
-          ))}
-          {dataMonth.weeks[0].days.map((day, index) => (
-            <Td key={index}>
-              <Box>
-                <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
-                <Text>{day.nbHours ? `${day.nbHours} heures` : ""}</Text>
-                <Text>{day.reasonAbsence}</Text>
-              </Box>
-            </Td>
-          ))}
-          <Td>
-            <Box>
-              <Text>{dataMonth.weeks[0].hours.totalHours} h</Text>
-              <Text>{dataMonth.weeks[0].hours.normalHours} h normales</Text>
-              <Text>{dataMonth.weeks[0].hours.extraHours} h sup 25%</Text>
-              <Text>{dataMonth.weeks[0].hours.moreExtraHours} h sup 50%</Text>
-            </Box>
-          </Td>
+          <Td>Lundi</Td>
+          <Td>Mardi</Td>
+          <Td>Mercredi</Td>
+          <Td>Jeudi</Td>
+          <Td>Vendredi</Td>
+          <Td>Samedi</Td>
+          <Td>Dimanche</Td>
+          <Td>Résultat</Td>
         </Tr>
-      }
-      {dataMonth.weeks.slice(1).map((week, index) => (
-        <Tr key={index}>
-          {week.days.map((day, index) => (
-            // <Td key={index}>{format(day, "dd") + " " + monthName(day)}</Td>
-            <Td key={index}>
+      </Thead>
+      <Tbody>
+        {
+          <Tr>
+            {dataMonth.lastWeekPreviousMonth.days.map((day, index) => (
+              <Td key={index}>
+                <Box>
+                  <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
+                  <Text>{day.nbHours ? `${day.nbHours} heures` : ""}</Text>
+                  <Text>{day.reasonAbsence}</Text>
+                </Box>
+              </Td>
+            ))}
+            {dataMonth.weeks[0].days.map((day, index) => (
+              <Td key={index}>
+                <Box>
+                  <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
+                  <Text>{day.nbHours ? `${day.nbHours} heures` : ""}</Text>
+                  <Text>{day.reasonAbsence}</Text>
+                </Box>
+              </Td>
+            ))}
+            <Td>
               <Box>
-                <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
-                <Text>{day.nbHours ? `${day.nbHours} heures` : ""}</Text>
-                <Text>{day.reasonAbsence}</Text>
+                <Text>{dataMonth.weeks[0].hours.totalHours} h</Text>
+                <Text>{dataMonth.weeks[0].hours.normalHours} h normales</Text>
+                <Text>{dataMonth.weeks[0].hours.extraHours} h sup 25%</Text>
+                <Text>{dataMonth.weeks[0].hours.moreExtraHours} h sup 50%</Text>
               </Box>
             </Td>
-          ))}
-          <Td>
-            <Box>
-              <Text>{week.hours.totalHours} h</Text>
-              <Text>{week.hours.normalHours} h normales</Text>
-              <Text>{week.hours.extraHours} h sup 25%</Text>
-              <Text>{week.hours.moreExtraHours} h sup 50%</Text>
-            </Box>
-          </Td>
-        </Tr>
-      ))}
+          </Tr>
+        }
+        {dataMonth.weeks.slice(1).map((week, index) => (
+          <Tr key={index}>
+            {week.days.map((day, index) => (
+              // <Td key={index}>{format(day, "dd") + " " + monthName(day)}</Td>
+              <Td key={index}>
+                <Box>
+                  <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
+                  <Text>{day.nbHours ? `${day.nbHours} heures` : ""}</Text>
+                  <Text>{day.reasonAbsence}</Text>
+                </Box>
+              </Td>
+            ))}
+            <Td>
+              <Box>
+                <Text>{week.hours.totalHours} h</Text>
+                <Text>{week.hours.normalHours} h normales</Text>
+                <Text>{week.hours.extraHours} h sup 25%</Text>
+                <Text>{week.hours.moreExtraHours} h sup 50%</Text>
+              </Box>
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
     </Table>
   )
 }
