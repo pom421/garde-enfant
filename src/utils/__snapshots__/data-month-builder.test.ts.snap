@@ -1,0 +1,182 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should match snapshot 1`] = `
+Object {
+  "weeks": Array [
+    Object {
+      "days": Array [
+        Object {
+          "date": 2022-01-30T23:00:00.000Z,
+          "nbHours": 5,
+        },
+        Object {
+          "date": 2022-01-31T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "VACATION",
+        },
+        Object {
+          "date": 2022-02-01T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "VACATION",
+        },
+        Object {
+          "date": 2022-02-02T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "VACATION",
+        },
+        Object {
+          "date": 2022-02-03T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "VACATION",
+        },
+        Object {
+          "date": 2022-02-04T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+        Object {
+          "date": 2022-02-05T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+      ],
+    },
+    Object {
+      "days": Array [
+        Object {
+          "date": 2022-02-06T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-07T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-08T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-09T23:00:00.000Z,
+          "nbHours": 7,
+        },
+        Object {
+          "date": 2022-02-10T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-11T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+        Object {
+          "date": 2022-02-12T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+      ],
+    },
+    Object {
+      "days": Array [
+        Object {
+          "date": 2022-02-13T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-14T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-15T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-16T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-17T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-18T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+        Object {
+          "date": 2022-02-19T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+      ],
+    },
+    Object {
+      "days": Array [
+        Object {
+          "date": 2022-02-20T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-21T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-22T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-23T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-24T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-25T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+        Object {
+          "date": 2022-02-26T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+      ],
+    },
+    Object {
+      "days": Array [
+        Object {
+          "date": 2022-02-27T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-02-28T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-03-01T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-03-02T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-03-03T23:00:00.000Z,
+          "nbHours": 10,
+        },
+        Object {
+          "date": 2022-03-04T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+        Object {
+          "date": 2022-03-05T23:00:00.000Z,
+          "nbHours": 0,
+          "reasonAbsence": "WE",
+        },
+      ],
+    },
+  ],
+}
+`;

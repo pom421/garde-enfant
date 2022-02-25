@@ -9,5 +9,5 @@ export function isPublicHoliday(date) {
   assertDate(date)
 
   // Est-ce que le jour fait partie des jours fériés de l'année ?
-  return memoizedPublicHolidays(getYear(date)).some((holidayDay) => isSameDay(date, holidayDay))
+  return memoizedPublicHolidays(getYear(date)).some((holidayDay: Date) => isSameDay(date, holidayDay))
 }

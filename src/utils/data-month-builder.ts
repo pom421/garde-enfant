@@ -1,10 +1,10 @@
 import { isWeekend, isWithinInterval, isSameDay, parseISO } from "date-fns"
-import { formatInTimeZone, utcToZonedTime } from "date-fns-tz"
+import { formatInTimeZone } from "date-fns-tz"
 
 import { utilMonth } from "@/utils/month"
 import { isPublicHoliday } from "@/utils/public-holidays"
-import { CAPACITY_NORMAL_HOURS, CAPACITY_EXTRA_HOURS, HOURS_REGULAR_DAY } from "@/config/index"
-import { REASONS_ABSENCE } from "@/config/index"
+import { CAPACITY_NORMAL_HOURS, CAPACITY_EXTRA_HOURS_25, HOURS_REGULAR_DAY } from "@/config/index"
+import type { REASONS_ABSENCE } from "@/config/index"
 import { assertDate } from "./date"
 
 function displayWeek(numWeek, days) {
@@ -17,96 +17,39 @@ function displayWeek(numWeek, days) {
   }
 }
 
+type DayType = {
+  date: Date
+  nbHours: number
+  reasonAbsence?: REASONS_ABSENCE
+}
+
+type DataMonthType = {
+  // lastWeekPreviousMonth: {
+  //   // numWeek: number
+  //   days: DayType[]
+  // }
+  weeks: {
+    // numWeek: number
+    days: DayType[]
+  }[]
+}
+
 // Construction de la structure de données pour le mois.
 export function buildDataMonth({ hours, absences }) {
   return function ({ year, month }) {
-    const dataMonth = {
-      meta: {
-        year,
-        month,
-        normalHours: 0,
-        extraHours: 0,
-        moreExtraHours: 0,
-      },
-      lastWeekPreviousMonth: {},
-      weeks: [],
-    }
+    const { weeks } = utilMonth({ year, month })
 
-    const { lastWeekPreviousMonth, weeks } = utilMonth({ year, month })
-
-    dataMonth.lastWeekPreviousMonth = {
-      days: lastWeekPreviousMonth.map((day) => ({
-        date: day,
-        nbHour: 0,
-        reasonAbsence: "",
+    const dataMonth: DataMonthType = {
+      // lastWeekPreviousMonth: {
+      //   days: lastWeekPreviousMonth.map((date) => fillDay({ hours, absences })(date)),
+      // },
+      weeks: weeks.map((week) => ({
+        days: week.map((date) => fillDay({ hours, absences })(date)),
       })),
-      hours: {
-        capacityNormalHours: CAPACITY_NORMAL_HOURS,
-        capacityExtraHours: CAPACITY_EXTRA_HOURS,
-        totalHours: 0,
-        normalHours: 0,
-        extraHours: 0,
-        moreExtraHours: 0,
-      },
     }
-
-    dataMonth.weeks = weeks.map((week) => ({
-      days: week.map((day) => ({
-        date: day,
-        nbHours: 0,
-        reasonAbsence: "",
-      })),
-      hours: {
-        capacityNormalHours: CAPACITY_NORMAL_HOURS,
-        capacityExtraHours: CAPACITY_EXTRA_HOURS,
-        totalHours: 0,
-        normalHours: 0,
-        extraHours: 0,
-        moreExtraHours: 0,
-      },
-    }))
-
-    dataMonth.lastWeekPreviousMonth.days = dataMonth.lastWeekPreviousMonth.days.map((day) =>
-      fillDay({ hours, absences })(day.date),
-    )
-
-    dataMonth.weeks.forEach((week) => {
-      week.days = week.days.map((day) => fillDay({ hours, absences })(day.date))
-    })
 
     return dataMonth
   }
-}
-
-export function computeHours(dataMonth) {
-  if (!dataMonth) return null
-
-  dataMonth.weeks.forEach((week) => {
-    const totalHours = week.days.reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
-    week.hours.totalHours = totalHours
-
-    const restant = week.hours.capacityNormalHours - totalHours
-
-    if (restant >= 0) {
-      week.hours.normalHours = totalHours
-      week.hours.capacityNormalHours -= totalHours
-    } else {
-      week.hours.normalHours = week.hours.capacityNormalHours
-      week.hours.capacityNormalHours = 0
-
-      const restantExtraHours = week.hours.capacityExtraHours - Math.abs(restant)
-
-      if (restantExtraHours >= 0) {
-        week.hours.extraHours = Math.abs(restant)
-        week.hours.capacityExtraHours -= Math.abs(restant)
-      } else {
-        week.hours.extraHours = week.hours.capacityExtraHours
-        week.hours.capacityExtraHours = 0
-
-        week.hours.moreExtraHours = Math.abs(restantExtraHours)
-      }
-    }
-  })
 }
 
 /**
@@ -115,20 +58,22 @@ export function computeHours(dataMonth) {
  * @param {Object} options. hours, la liste des heures modifiées de la garde d'enfant. absences, la liste des absences de la garde d'enfant.
  */
 export function fillDay({ hours = [], absences = [] }) {
-  return function (date) {
+  return function (date): { date: Date; reasonAbsence?: REASONS_ABSENCE; nbHours: number } {
     assertDate(date)
 
     // la date est-elle un samedi ou dimanche?
     if (isWeekend(date))
       return {
         date,
-        reasonAbsence: REASONS_ABSENCE.WE,
+        nbHours: 0,
+        reasonAbsence: "WE",
       }
     // la date est-elle un jour férié ?
     if (isPublicHoliday(date))
       return {
         date,
-        reasonAbsence: REASONS_ABSENCE.PUBLIC_HOLIDAY,
+        nbHours: 0,
+        reasonAbsence: "PUBLIC_HOLIDAY",
       }
 
     // la date a-t-elle des heures explicites ?
@@ -146,6 +91,7 @@ export function fillDay({ hours = [], absences = [] }) {
       if (isWithinInterval(date, { start: parseISO(absence.start), end: parseISO(absence.end) })) {
         return {
           date,
+          nbHours: 0,
           reasonAbsence: absence.reason,
         }
       }
@@ -159,99 +105,48 @@ export function fillDay({ hours = [], absences = [] }) {
   }
 }
 
-/*
-const dataMonth = {
-  normalHours: 200,
-  extraHours: 32,
-  moreExtraHours: 10,
-  lastWeekPreviousMonth: {
-    days: [
-      {
-        date: "2022-01-31",
-        reasonAbsence: "",
-        nbHours: 10,
-      },
-    ],
-    capacityNormalHours: 40,
-    capacityExtraHours: 8,
-    normalHours: 10,
-    extraHours: 0,
-    moreExtraHours: 0,
-  },
-  weeks: [
-    {
-      days: [
-        {
-          date: "2022-02-01",
-          nbHours: 10,
-        },
-        {
-          date: "2022-02-02",
-          nbHours: 10,
-        },
-        {
-          date: "2022-02-03",
-          nbHours: 10,
-        },
-        {
-          date: "2022-02-04",
-          nbHours: 10,
-        },
-        {
-          date: "2022-02-05",
-          reasonAbsence: REASONS_ABSENCE.WE,
-        },
-        {
-          date: "2022-02-06",
-          reasonAbsence: REASONS_ABSENCE.WE,
-        },
-      ],
-      capacityNormalHours: 30, // 40 - normalHours de la semaine équivalente du mois précédent
-      capacityExtraHours: 8, // 8 - extraHours de la semaine équivalente du mois précédent
-      totalHours: 40,
-      normalHours: 30,
-      extraHours: 8,
-      moreExtraHours: 2,
-    },
-    {
-      name: "S2",
-      days: [
-        {
-          date: "2022-02-01",
-          reasonAbsence: "",
-          nbHours: 10,
-        },
-        {
-          date: "2022-02-02",
-          reasonAbsence: "",
-          nbHours: 10,
-        },
-        {
-          date: "2022-02-03",
-          reasonAbsence: "",
-          nbHours: 10,
-        },
-        {
-          date: "2022-02-04",
-          reasonAbsence: "",
-          nbHours: 10,
-        },
-        {
-          date: "2022-02-05",
-          reasonAbsence: REASONS_ABSENCE.WE,
-        },
-        {
-          date: "2022-02-06",
-          reasonAbsence: REASONS_ABSENCE.WE,
-        },
-      ],
-      capacityNormalHours: 0, // 40 - normalHours de la semaine équivalente du mois précédent
-      capacityExtraHours: 8, // 8 - extraHours de la semaine équivalente du mois précédent
-      totalHours: 50,
-      normalHours: 30,
-      extraHours: 8,
-      moreExtraHours: 2,
-    },
-  ],
+export function getHoursInWeek(week: { days: DayType[] }) {
+  //   /*
+  //     {
+  //       totalHoursInWeek: number
+  //       totalHoursInWeekSameMonth: number
+  //       normalHours: number
+  //       extraHours25: number
+  //       extraHours50: number
+  //     }
+  //   */
+  const hours = {
+    totalHours: 0,
+    normalHours: 0,
+    extraHours25: 0,
+    extraHours50: 0,
+    capacityNormalHours: CAPACITY_NORMAL_HOURS,
+    capacityExtraHours: CAPACITY_EXTRA_HOURS_25,
+  }
+
+  const totalHours = week.days.reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
+  hours.totalHours = totalHours
+
+  const restant = hours.capacityNormalHours - totalHours
+
+  if (restant >= 0) {
+    hours.normalHours = totalHours
+    hours.capacityNormalHours -= totalHours
+  } else {
+    hours.normalHours = hours.capacityNormalHours
+    hours.capacityNormalHours = 0
+
+    const restantExtraHours = hours.capacityExtraHours - Math.abs(restant)
+
+    if (restantExtraHours >= 0) {
+      hours.extraHours25 = Math.abs(restant)
+      hours.capacityExtraHours -= Math.abs(restant)
+    } else {
+      hours.extraHours25 = hours.capacityExtraHours
+      hours.capacityExtraHours = 0
+
+      hours.extraHours50 = Math.abs(restantExtraHours)
+    }
+  }
+  return hours
 }
-*/

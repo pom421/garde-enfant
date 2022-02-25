@@ -4,7 +4,7 @@ const defaultValue = {
   currentMonth: [new Date().getMonth(), new Date().getFullYear()],
   currentMonthName: "",
   addOneMonth: () => {},
-  emoveOneMonth: () => {},
+  removeOneMonth: () => {},
 }
 
 const DateContext = React.createContext(defaultValue)

@@ -1,12 +1,14 @@
-import { HOURS_REGULAR_DAY, REASONS_ABSENCE } from "@/config/index"
+import { HOURS_REGULAR_DAY } from "@/config/index"
+import type { REASONS_ABSENCE } from "@/config/index"
+
 import { parseISO } from "date-fns"
 import { buildDataMonth, fillDay } from "./data-month-builder"
 
 test("should find a sunday", () => {
   const { reasonAbsence, nbHours } = fillDay({})(parseISO("2022-01-30")) // dimanche
 
-  expect(nbHours).toBe(undefined)
-  expect(reasonAbsence).toBe(REASONS_ABSENCE.WE)
+  expect(nbHours).toBe(0)
+  expect(reasonAbsence).toBe("WE")
 })
 
 test("should find a vacation", () => {
@@ -14,21 +16,21 @@ test("should find a vacation", () => {
     {
       start: "2022-01-30",
       end: "2022-02-01",
-      reason: REASONS_ABSENCE.VACATION,
+      reason: "VACATION",
     },
   ]
 
   const { reasonAbsence, nbHours } = fillDay({ absences })(parseISO("2022-01-31"))
 
-  expect(nbHours).toBe(undefined)
-  expect(reasonAbsence).toBe(REASONS_ABSENCE.VACATION)
+  expect(nbHours).toBe(0)
+  expect(reasonAbsence).toBe("VACATION")
 })
 
 test("should find a publicHoliday", () => {
   const { reasonAbsence, nbHours } = fillDay({})(parseISO("2022-07-14")) // jours férié
 
-  expect(nbHours).toBe(undefined)
-  expect(reasonAbsence).toBe(REASONS_ABSENCE.PUBLIC_HOLIDAY)
+  expect(nbHours).toBe(0)
+  expect(reasonAbsence).toBe("PUBLIC_HOLIDAY")
 })
 
 test("should find a regulard day with defaut hours", () => {
@@ -55,7 +57,7 @@ test("should match snapshot", () => {
     {
       start: "2022-01-30",
       end: "2022-02-05",
-      reason: REASONS_ABSENCE.VACATION,
+      reason: "VACATION",
     },
   ]
 
