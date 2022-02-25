@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Table, Tbody, Td, Text, Thead, Tr, useColorModeValue } from "@chakra-ui/react"
+import { Box, Table, Tbody, Td, Text, Thead, Tr } from "@chakra-ui/react"
 import { format, getMonth } from "date-fns"
 
 import { useDateContext } from "@/components/DateContext"
@@ -12,11 +12,9 @@ function monthName(date) {
 }
 
 export function Calendar() {
-  const colorNormalHours = useColorModeValue("gray.800", "gray.100")
-  const colorExtraHours = useColorModeValue("yellow.800", "yellow.100")
   const { currentMonth } = useDateContext()
 
-  let { weeks } = buildDataMonth({ hours, absences })({
+  let weeks = buildDataMonth({ hours, absences })({
     year: currentMonth[1],
     month: currentMonth[0],
   })
@@ -37,12 +35,11 @@ export function Calendar() {
       </Thead>
       <Tbody>
         {weeks.map((week, index) => {
-          const hours = getHoursInWeek(week)
+          const hours = getHoursInWeek(week.days)
 
           return (
             <Tr key={index}>
               {week.days.map((day, index) => (
-                // <Td key={index}>{format(day, "dd") + " " + monthName(day)}</Td>
                 <Td key={index}>
                   <Box>
                     <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
@@ -65,23 +62,4 @@ export function Calendar() {
       </Tbody>
     </Table>
   )
-}
-const styleWrapper = {
-  border: "3px solid",
-  borderRadius: 4,
-  display: "grid",
-  gridTemplateColumns: "repeat(7, 5rem)",
-  padding: 16,
-  gap: 4,
-  width: "min-content",
-  marginBottom: 20,
-}
-
-const styleDay = {
-  border: "2px solid",
-  borderRadius: 4,
-  height: "5rem",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
 }

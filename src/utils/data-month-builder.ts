@@ -1,21 +1,10 @@
 import { isWeekend, isWithinInterval, isSameDay, parseISO } from "date-fns"
-import { formatInTimeZone } from "date-fns-tz"
 
 import { utilMonth } from "@/utils/month"
 import { isPublicHoliday } from "@/utils/public-holidays"
 import { CAPACITY_NORMAL_HOURS, CAPACITY_EXTRA_HOURS_25, HOURS_REGULAR_DAY } from "@/config/index"
 import type { REASONS_ABSENCE } from "@/config/index"
-import { assertDate } from "./date"
-
-function displayWeek(numWeek, days) {
-  // eslint-disable-next-line no-console
-  console.log("week", numWeek)
-
-  for (const day of days) {
-    // eslint-disable-next-line no-console
-    console.log(formatInTimeZone(day, "Europe/Paris", "yyyy-MM-dd"))
-  }
-}
+import { assertDate } from "@/utils/date"
 
 type DayType = {
   date: Date
@@ -23,32 +12,16 @@ type DayType = {
   reasonAbsence?: REASONS_ABSENCE
 }
 
-type DataMonthType = {
-  // lastWeekPreviousMonth: {
-  //   // numWeek: number
-  //   days: DayType[]
-  // }
-  weeks: {
-    // numWeek: number
-    days: DayType[]
-  }[]
-}
+type DataWeeksType = { days: DayType[] }[]
 
 // Construction de la structure de données pour le mois.
 export function buildDataMonth({ hours, absences }) {
-  return function ({ year, month }) {
+  return function ({ year, month }): DataWeeksType {
     const { weeks } = utilMonth({ year, month })
 
-    const dataMonth: DataMonthType = {
-      // lastWeekPreviousMonth: {
-      //   days: lastWeekPreviousMonth.map((date) => fillDay({ hours, absences })(date)),
-      // },
-      weeks: weeks.map((week) => ({
-        days: week.map((date) => fillDay({ hours, absences })(date)),
-      })),
-    }
-
-    return dataMonth
+    return weeks.map((week) => ({
+      days: week.map((date) => fillDay({ hours, absences })(date)),
+    }))
   }
 }
 
@@ -105,7 +78,7 @@ export function fillDay({ hours = [], absences = [] }) {
   }
 }
 
-export function getHoursInWeek(week: { days: DayType[] }) {
+export function getHoursInWeek(days: DayType[]) {
   //   /*
   //     {
   //       totalHoursInWeek: number
@@ -124,7 +97,7 @@ export function getHoursInWeek(week: { days: DayType[] }) {
     capacityExtraHours: CAPACITY_EXTRA_HOURS_25,
   }
 
-  const totalHours = week.days.reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
+  const totalHours = days.reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
   hours.totalHours = totalHours
 
   const restant = hours.capacityNormalHours - totalHours
