@@ -2,13 +2,13 @@ import { Badge, Table, Tbody, TableCaption, Thead, Tr, Th, Td } from "@chakra-ui
 import { eachDayOfInterval, isAfter, parseISO, getYear, isSameDay, isSaturday, isSunday } from "date-fns"
 import { isPublicHoliday } from "@/utils/public-holidays"
 
-import { absences } from "../data/app"
+import { absences } from "@/data/app"
 
 /*
  * Enrichit les données avec des données calculées.
  */
-function absencesBuilder(data) {
-  const absences = data.absences
+function absencesBuilder(absences) {
+  absences
     .sort((day1, day2) => (day1.start === day2.start ? 0 : day1.start > day2.start ? 1 : -1))
     .map((day) => ({ ...day, days: computeDays(day) }))
   const putCP = absences.filter((day) => day.reason === "CP").reduce((acc, day) => acc + day.days, 0)
@@ -17,7 +17,6 @@ function absencesBuilder(data) {
   const leftRTT = 10 - putRTT
 
   return {
-    ...data,
     absences,
     putCP,
     leftCP,
