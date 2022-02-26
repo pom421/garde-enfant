@@ -15,7 +15,7 @@ function monthName(date) {
 export function Calendar() {
   const { yearMonth } = useDateContext()
 
-  let weeks = buildDataWeeks({ hours, absences })([yearMonth[1], yearMonth[0]])
+  let weeks = buildDataWeeks({ hours, absences })([yearMonth[0], yearMonth[1]])
 
   return (
     <Table>
@@ -48,10 +48,10 @@ export function Calendar() {
               ))}
               <Td>
                 <Box>
-                  <Text>{hours?.totalHours} h</Text>
-                  <Text>{hours?.normalHours} h normales</Text>
-                  <Text>{hours?.extraHours25} h sup 25%</Text>
-                  <Text>{hours?.extraHours50} h sup 50%</Text>
+                  <Text>{hours.totalHours} h</Text>
+                  <Text>{hours.normalHours} h normales</Text>
+                  <Text>{hours.extraHours25} h sup 25%</Text>
+                  <Text>{hours.extraHours50} h sup 50%</Text>
                 </Box>
               </Td>
             </Tr>

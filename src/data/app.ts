@@ -6,6 +6,8 @@ type AbsenceType = {
   reason: REASONS_ABSENCE
 }
 
+export const tauxHoraire = 8.24
+
 export const absences: AbsenceType[] = [
   {
     start: "2022-01-01",
