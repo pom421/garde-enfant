@@ -4,20 +4,18 @@ import { format, getMonth } from "date-fns"
 
 import { useDateContext } from "@/components/DateContext"
 import { shortFrenchMonthNames } from "@/components/DateContext"
-import { buildDataMonth, getHoursInWeek } from "@/utils/data-month-builder"
+import { buildDataWeeks } from "@/utils/data-month-builder"
 import { absences, hours } from "@/data/app"
+import { computeWeekHours } from "@/utils/hours-rules"
 
 function monthName(date) {
   return shortFrenchMonthNames[getMonth(date)]
 }
 
 export function Calendar() {
-  const { currentMonth } = useDateContext()
+  const { yearMonth } = useDateContext()
 
-  let weeks = buildDataMonth({ hours, absences })({
-    year: currentMonth[1],
-    month: currentMonth[0],
-  })
+  let weeks = buildDataWeeks({ hours, absences })([yearMonth[1], yearMonth[0]])
 
   return (
     <Table>
@@ -35,7 +33,7 @@ export function Calendar() {
       </Thead>
       <Tbody>
         {weeks.map((week, index) => {
-          const hours = getHoursInWeek(week.days)
+          const hours = computeWeekHours(week.days, yearMonth)
 
           return (
             <Tr key={index}>

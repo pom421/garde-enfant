@@ -2,11 +2,11 @@ import { isWeekend, isWithinInterval, isSameDay, parseISO } from "date-fns"
 
 import { utilMonth } from "@/utils/month"
 import { isPublicHoliday } from "@/utils/public-holidays"
-import { CAPACITY_NORMAL_HOURS, CAPACITY_EXTRA_HOURS_25, HOURS_REGULAR_DAY } from "@/config/index"
+import { HOURS_REGULAR_DAY } from "@/config/index"
 import type { REASONS_ABSENCE } from "@/config/index"
-import { assertDate } from "@/utils/date"
+import { assertDate, YearMonthType } from "@/utils/date"
 
-type DayType = {
+export type DayType = {
   date: Date
   nbHours: number
   reasonAbsence?: REASONS_ABSENCE
@@ -15,9 +15,9 @@ type DayType = {
 type DataWeeksType = { days: DayType[] }[]
 
 // Construction de la structure de données pour le mois.
-export function buildDataMonth({ hours, absences }) {
-  return function ({ year, month }): DataWeeksType {
-    const { weeks } = utilMonth({ year, month })
+export function buildDataWeeks({ hours = [], absences = [] } = { hours: [], absences: [] }) {
+  return function (yearMonth: YearMonthType): DataWeeksType {
+    const { weeks } = utilMonth(yearMonth)
 
     return weeks.map((week) => ({
       days: week.map((date) => fillDay({ hours, absences })(date)),
@@ -76,50 +76,4 @@ export function fillDay({ hours = [], absences = [] }) {
       nbHours: HOURS_REGULAR_DAY,
     }
   }
-}
-
-export function getHoursInWeek(days: DayType[]) {
-  //   /*
-  //     {
-  //       totalHoursInWeek: number
-  //       totalHoursInWeekSameMonth: number
-  //       normalHours: number
-  //       extraHours25: number
-  //       extraHours50: number
-  //     }
-  //   */
-  const hours = {
-    totalHours: 0,
-    normalHours: 0,
-    extraHours25: 0,
-    extraHours50: 0,
-    capacityNormalHours: CAPACITY_NORMAL_HOURS,
-    capacityExtraHours: CAPACITY_EXTRA_HOURS_25,
-  }
-
-  const totalHours = days.reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
-  hours.totalHours = totalHours
-
-  const restant = hours.capacityNormalHours - totalHours
-
-  if (restant >= 0) {
-    hours.normalHours = totalHours
-    hours.capacityNormalHours -= totalHours
-  } else {
-    hours.normalHours = hours.capacityNormalHours
-    hours.capacityNormalHours = 0
-
-    const restantExtraHours = hours.capacityExtraHours - Math.abs(restant)
-
-    if (restantExtraHours >= 0) {
-      hours.extraHours25 = Math.abs(restant)
-      hours.capacityExtraHours -= Math.abs(restant)
-    } else {
-      hours.extraHours25 = hours.capacityExtraHours
-      hours.capacityExtraHours = 0
-
-      hours.extraHours50 = Math.abs(restantExtraHours)
-    }
-  }
-  return hours
 }

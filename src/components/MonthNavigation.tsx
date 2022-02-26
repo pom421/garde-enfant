@@ -5,20 +5,15 @@ import { IconButton } from "@chakra-ui/react"
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons"
 
 export const MonthNavigation = () => {
-  const { currentMonthName, currentMonth, addOneMonth, removeOneMonth } = useDateContext()
+  const { yearMonthName, yearMonth, addOneMonth, subOneMonth } = useDateContext()
 
   return (
     <Flex justifyContent="flex-end" mt="8" mb="12" mr="16">
-      <IconButton
-        variant="link"
-        aria-label="Mois précédent"
-        icon={<ArrowLeftIcon />}
-        onClick={() => removeOneMonth()}
-      />
+      <IconButton variant="link" aria-label="Mois précédent" icon={<ArrowLeftIcon />} onClick={subOneMonth} />
       <Text minWidth={150} textAlign="center">
-        {currentMonthName} {currentMonth[1]}
+        {yearMonthName} {yearMonth[0]}
       </Text>
-      <IconButton variant="link" aria-label="Mois suivant" icon={<ArrowRightIcon />} onClick={() => addOneMonth()} />
+      <IconButton variant="link" aria-label="Mois suivant" icon={<ArrowRightIcon />} onClick={addOneMonth} />
     </Flex>
   )
 }

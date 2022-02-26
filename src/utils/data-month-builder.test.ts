@@ -2,7 +2,7 @@ import { HOURS_REGULAR_DAY } from "@/config/index"
 import type { REASONS_ABSENCE } from "@/config/index"
 
 import { parseISO } from "date-fns"
-import { buildDataMonth, fillDay } from "./data-month-builder"
+import { buildDataWeeks, fillDay } from "./data-month-builder"
 
 test("should find a sunday", () => {
   const { reasonAbsence, nbHours } = fillDay({})(parseISO("2022-01-30")) // dimanche
@@ -61,7 +61,7 @@ test("should match snapshot", () => {
     },
   ]
 
-  const dataMonth = buildDataMonth({ hours, absences })({ year: 2022, month: 1 })
+  const weeks = buildDataWeeks({ hours, absences })([2022, 1])
 
-  expect(dataMonth).toMatchSnapshot()
+  expect(weeks).toMatchSnapshot()
 })

@@ -1,4 +1,5 @@
 import { previousMonday, nextSunday, lastDayOfMonth, eachDayOfInterval, eachWeekOfInterval } from "date-fns"
+import { YearMonthType } from "./date"
 
 type UtilMonthReturnType = {
   firstDay: Date
@@ -12,8 +13,8 @@ type UtilMonthReturnType = {
   mondays: Date[]
 }
 
-export function utilMonth({ year, month }): UtilMonthReturnType {
-  const firstDay = new Date(year, month, 1)
+export function utilMonth(yearMonth: YearMonthType): UtilMonthReturnType {
+  const firstDay = new Date(yearMonth[0], yearMonth[1], 1)
   const lastDay = lastDayOfMonth(firstDay)
   const weeks = eachWeekOfInterval({ start: firstDay, end: lastDay }, { weekStartsOn: 1 }).map((monday) => {
     return eachDayOfInterval({ start: monday, end: nextSunday(monday) })

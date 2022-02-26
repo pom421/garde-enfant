@@ -1,10 +1,11 @@
+import { addOneMonth, subOneMonth, YearMonthType } from "@/utils/date"
 import React from "react"
 
 const defaultValue = {
-  currentMonth: [new Date().getMonth(), new Date().getFullYear()],
-  currentMonthName: "",
+  yearMonth: [new Date().getMonth(), new Date().getFullYear()] as const,
+  yearMonthName: "",
   addOneMonth: () => {},
-  removeOneMonth: () => {},
+  subOneMonth: () => {},
 }
 
 const DateContext = React.createContext(defaultValue)
@@ -40,24 +41,20 @@ export const shortFrenchMonthNames = [
 ]
 
 export function DateContextProvider({ children }) {
-  // ex currentMonth : [1, 2022]
-  const [currentMonth, setCurrentMonth] = React.useState(() => [new Date().getMonth(), new Date().getFullYear()])
-
-  const currentMonthName = frenchMonthNames[currentMonth[0]]
-
-  function addOneMonth() {
-    setCurrentMonth((oldMonth) => [(oldMonth[0] + 1) % 12, oldMonth[0] === 11 ? oldMonth[1] + 1 : oldMonth[1]])
-  }
-
-  function removeOneMonth() {
-    setCurrentMonth((oldMonth) => [
-      oldMonth[0] === 0 ? 11 : oldMonth[0] - 1,
-      oldMonth[0] === 0 ? oldMonth[1] - 1 : oldMonth[1],
-    ])
-  }
+  const [yearMonth, setYearMonth] = React.useState<YearMonthType>(() => [
+    new Date().getFullYear(),
+    new Date().getMonth(),
+  ])
 
   return (
-    <DateContext.Provider value={{ currentMonth, currentMonthName, addOneMonth, removeOneMonth }}>
+    <DateContext.Provider
+      value={{
+        yearMonth,
+        yearMonthName: frenchMonthNames[yearMonth[1]],
+        addOneMonth: () => setYearMonth(addOneMonth),
+        subOneMonth: () => setYearMonth(subOneMonth),
+      }}
+    >
       {children}
     </DateContext.Provider>
   )
