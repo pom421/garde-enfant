@@ -1,5 +1,5 @@
 import { HOURS_REGULAR_DAY } from "@/config/index"
-import type { REASONS_ABSENCE } from "@/config/index"
+import { AbsenceType } from "@/data/app"
 
 import { parseISO } from "date-fns"
 import { buildDataWeeks, fillDay } from "./data-month-builder"
@@ -12,7 +12,7 @@ test("should find a sunday", () => {
 })
 
 test("should find a vacation", () => {
-  const absences = [
+  const absences: AbsenceType[] = [
     {
       start: "2022-01-30",
       end: "2022-02-01",

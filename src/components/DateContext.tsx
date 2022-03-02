@@ -1,10 +1,13 @@
-import { addOneMonth, subOneMonth, YearMonthType } from "@/utils/date"
 import React from "react"
+
+import { addOneMonth, subOneMonth, YearMonthType } from "@/utils/date"
 
 const defaultValue = {
   yearMonth: [new Date().getMonth(), new Date().getFullYear()] as const,
   yearMonthName: "",
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   addOneMonth: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   subOneMonth: () => {},
 }
 

@@ -1,21 +1,25 @@
-import { Button, Container, Flex } from "@chakra-ui/react"
+import React from "react"
+import { Container } from "@chakra-ui/react"
 
 import { MonthNavigation } from "@/components/MonthNavigation"
 import { Calendar } from "@/components/Calendar"
-import { DateContextProvider, useDateContext } from "@/components/DateContext"
-import { useRouter } from "next/router"
+import { DateContextProvider } from "@/components/DateContext"
 import { DisplaySalary } from "@/components/DisplaySalary"
 
-function ButtonToCompute() {
-  const router = useRouter()
-  const { yearMonth } = useDateContext()
+// function ButtonToCompute() {
+//   const router = useRouter()
+//   const { yearMonth } = useDateContext()
 
-  return (
-    <Flex justify="end" mt={4}>
-      <Button onClick={() => router.push(`/calculer/${yearMonth[0]}/${yearMonth[1]}`)}>Calculer le salaire</Button>
-    </Flex>
-  )
-}
+//   React.useEffect(() => {
+//     console.log("yearMonth", yearMonth)
+//   }, [])
+
+//   return (
+//     <Flex justify="end" mt={4}>
+//       <Button onClick={() => router.push(`/calculer/${yearMonth[0]}/${yearMonth[1]}`)}>Calculer le salaire</Button>
+//     </Flex>
+//   )
+// }
 
 export default function IndexPage() {
   return (

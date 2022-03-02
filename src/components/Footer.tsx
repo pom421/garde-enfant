@@ -1,15 +1,5 @@
 import * as React from "react"
-import {
-  Box,
-  Stack,
-  chakra,
-  useColorModeValue,
-  useToken,
-  Text,
-  TextProps,
-  ButtonGroup,
-  IconButton,
-} from "@chakra-ui/react"
+import { Box, Stack, chakra, useColorModeValue, useToken, Text, ButtonGroup, IconButton } from "@chakra-ui/react"
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa"
 
 export const SocialMediaLinks = (props) => (

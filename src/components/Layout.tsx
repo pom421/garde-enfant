@@ -1,4 +1,3 @@
-import { ReactNode } from "react"
 import {
   Box,
   Flex,
@@ -27,7 +26,7 @@ import { Footer } from "@/components/Footer"
 const Links = [
   { label: "Heures du mois", href: "/" },
   { label: "Congés", href: "/absences" },
-  { label: "Administration", href: "/admin" },
+  // { label: "Administration", href: "/admin" },
 ]
 
 const NavLink = ({ children, href }) => (
@@ -53,8 +52,8 @@ export default function Layout({ children }) {
   return (
     <>
       <Flex minH="100vh" direction="column">
-        <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
-          <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+        <Box bg={useColorModeValue("gray.100", "gray.900")} px="4">
+          <Flex h="16" alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
               icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}

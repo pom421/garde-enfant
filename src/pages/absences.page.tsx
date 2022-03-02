@@ -1,7 +1,8 @@
-import { Footer } from "@/components/Footer"
-import Holiday from "@/components/Holiday"
 import { Container } from "@chakra-ui/react"
 import Head from "next/head"
+
+import { Footer } from "@/components/Footer"
+import Holiday from "@/components/Holiday"
 import styles from "../styles/Home.module.css"
 
 export default function HolidaysPage() {

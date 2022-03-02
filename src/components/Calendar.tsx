@@ -7,6 +7,7 @@ import { shortFrenchMonthNames } from "@/components/DateContext"
 import { buildDataWeeks } from "@/utils/data-month-builder"
 import { absences, hours } from "@/data/app"
 import { computeWeekHours } from "@/utils/hours-rules"
+import { colorAbsence, LABEL_ABSENCE } from "@/config"
 
 function monthName(date) {
   return shortFrenchMonthNames[getMonth(date)]
@@ -15,12 +16,12 @@ function monthName(date) {
 export function Calendar() {
   const { yearMonth } = useDateContext()
 
-  let weeks = buildDataWeeks({ hours, absences })([yearMonth[0], yearMonth[1]])
+  const weeks = buildDataWeeks({ hours, absences })([yearMonth[0], yearMonth[1]])
 
   return (
-    <Table>
+    <Table border="1px solid" borderColor="gray.200" textColor="gray.800">
       <Thead>
-        <Tr>
+        <Tr bgColor="yellow.100">
           <Td>Lundi</Td>
           <Td>Mardi</Td>
           <Td>Mercredi</Td>
@@ -38,15 +39,15 @@ export function Calendar() {
           return (
             <Tr key={index}>
               {week.days.map((day, index) => (
-                <Td key={index}>
+                <Td key={index} bgColor={colorAbsence(day.reasonAbsence)}>
                   <Box>
                     <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
                     <Text>{day.nbHours ? `${day.nbHours} heures` : ""}</Text>
-                    <Text>{day.reasonAbsence}</Text>
+                    <Text fontWeight="medium">{day.reasonAbsence && LABEL_ABSENCE[day.reasonAbsence]}</Text>
                   </Box>
                 </Td>
               ))}
-              <Td>
+              <Td bgColor="green.100">
                 <Box>
                   <Text>{hours.totalHours} h</Text>
                   <Text>{hours.normalHours} h normales</Text>

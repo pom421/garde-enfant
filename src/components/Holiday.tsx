@@ -1,8 +1,9 @@
 import { Badge, Table, Tbody, TableCaption, Thead, Tr, Th, Td } from "@chakra-ui/react"
-import { eachDayOfInterval, isAfter, parseISO, getYear, isSameDay, isSaturday, isSunday } from "date-fns"
-import { isPublicHoliday } from "@/utils/public-holidays"
+import { eachDayOfInterval, parseISO, isSaturday, isSunday } from "date-fns"
 
+import { isPublicHoliday } from "@/utils/public-holidays"
 import { absences } from "@/data/app"
+import { colorAbsence, LABEL_ABSENCE } from "@/config"
 
 /*
  * Enrichit les données avec des données calculées.
@@ -37,7 +38,7 @@ function computeDays({ start, end }) {
 }
 
 function reasonBadge(reason) {
-  return <Badge colorScheme={reason === "CP" ? "green" : reason === "RTT" ? "purple" : "red"}>{reason}</Badge>
+  return <Badge bgColor={colorAbsence(reason)}>{LABEL_ABSENCE[reason]}</Badge>
 }
 
 const allData = absencesBuilder(absences)

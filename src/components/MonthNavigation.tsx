@@ -1,8 +1,9 @@
-import { Button, Flex, Text } from "@chakra-ui/react"
 import React from "react"
-import { useDateContext } from "./DateContext"
+import { Flex, Text } from "@chakra-ui/react"
 import { IconButton } from "@chakra-ui/react"
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons"
+
+import { useDateContext } from "@/components/DateContext"
 
 export const MonthNavigation = () => {
   const { yearMonthName, yearMonth, addOneMonth, subOneMonth } = useDateContext()
