@@ -6,7 +6,7 @@ export type AbsenceType = {
   reason: REASONS_ABSENCE
 }
 
-export const tauxHoraire = 8.24
+export const tauxHoraire = 8.44
 
 export const absences: AbsenceType[] = [
   {
