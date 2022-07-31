@@ -3,7 +3,7 @@ import { eachDayOfInterval, parseISO, isSaturday, isSunday } from "date-fns"
 
 import { isPublicHoliday } from "@/utils/public-holidays"
 import { absences } from "@/data/app"
-import { colorAbsence, LABEL_ABSENCE } from "@/config"
+import { colorAbsence, INFOS_ABSENCE } from "@/config/config"
 
 /*
  * Enrichit les données avec des données calculées.
@@ -38,7 +38,7 @@ function computeDays({ start, end }) {
 }
 
 function reasonBadge(reason) {
-  return <Badge bgColor={colorAbsence(reason)}>{LABEL_ABSENCE[reason]}</Badge>
+  return <Badge bgColor={colorAbsence(reason)}>{INFOS_ABSENCE[reason].label}</Badge>
 }
 
 const allData = absencesBuilder(absences)

@@ -1,9 +1,9 @@
 import { isWeekend, isWithinInterval, isSameDay, parseISO } from "date-fns"
 
-import { utilMonth } from "@/utils/month"
+import { helpersForMonth } from "@/utils/month"
 import { isPublicHoliday } from "@/utils/public-holidays"
-import { HOURS_REGULAR_DAY } from "@/config/index"
-import type { REASONS_ABSENCE } from "@/config/index"
+import { HOURS_REGULAR_DAY, INFOS_ABSENCE } from "@/config/config"
+import type { REASONS_ABSENCE } from "@/config/config"
 import { assertDate, YearMonthType } from "@/utils/date"
 import { AbsenceType, HourType } from "@/data/app"
 
@@ -18,10 +18,12 @@ type DataWeeksType = { days: DayType[] }[]
 // Construction de la structure de données pour le mois.
 export function buildDataWeeks({ hours = [], absences = [] } = { hours: [], absences: [] }) {
   return function (yearMonth: YearMonthType): DataWeeksType {
-    const { weeks } = utilMonth(yearMonth)
+    const { weeks } = helpersForMonth(yearMonth)
+
+    const fillDay = fillDayBuilder({ hours, absences })
 
     return weeks.map((week) => ({
-      days: week.map((date) => fillDay({ hours, absences })(date)),
+      days: week.map((date) => fillDay(date)),
     }))
   }
 }
@@ -31,7 +33,7 @@ export function buildDataWeeks({ hours = [], absences = [] } = { hours: [], abse
  *
  * @param {Object} options. hours, la liste des heures modifiées de la garde d'enfant. absences, la liste des absences de la garde d'enfant.
  */
-export function fillDay({ hours = [], absences = [] }: { hours?: HourType[]; absences?: AbsenceType[] }) {
+export function fillDayBuilder({ hours = [], absences = [] }: { hours?: HourType[]; absences?: AbsenceType[] }) {
   return function (date): { date: Date; reasonAbsence?: REASONS_ABSENCE; nbHours: number } {
     assertDate(date)
 
@@ -65,7 +67,7 @@ export function fillDay({ hours = [], absences = [] }: { hours?: HourType[]; abs
       if (isWithinInterval(date, { start: parseISO(absence.start), end: parseISO(absence.end) })) {
         return {
           date,
-          nbHours: absence.reason === "SICKNESS" ? HOURS_REGULAR_DAY / 2 : 0,
+          nbHours: INFOS_ABSENCE[absence.reason].nbHours,
           reasonAbsence: absence.reason,
         }
       }

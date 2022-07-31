@@ -1,11 +1,11 @@
-import { HOURS_REGULAR_DAY } from "@/config/index"
+import { HOURS_REGULAR_DAY } from "@/config/config"
 import { AbsenceType } from "@/data/app"
 
 import { parseISO } from "date-fns"
-import { buildDataWeeks, fillDay } from "./data-month-builder"
+import { buildDataWeeks, fillDayBuilder } from "./data-month-builder"
 
 test("should find a sunday", () => {
-  const { reasonAbsence, nbHours } = fillDay({})(parseISO("2022-01-30")) // dimanche
+  const { reasonAbsence, nbHours } = fillDayBuilder({})(parseISO("2022-01-30")) // dimanche
 
   expect(nbHours).toBe(0)
   expect(reasonAbsence).toBe("WE")
@@ -20,21 +20,21 @@ test("should find a vacation", () => {
     },
   ]
 
-  const { reasonAbsence, nbHours } = fillDay({ absences })(parseISO("2022-01-31"))
+  const { reasonAbsence, nbHours } = fillDayBuilder({ absences })(parseISO("2022-01-31"))
 
   expect(nbHours).toBe(0)
   expect(reasonAbsence).toBe("VACATION")
 })
 
 test("should find a publicHoliday", () => {
-  const { reasonAbsence, nbHours } = fillDay({})(parseISO("2022-07-14")) // jours férié
+  const { reasonAbsence, nbHours } = fillDayBuilder({})(parseISO("2022-07-14")) // jours férié
 
   expect(nbHours).toBe(0)
   expect(reasonAbsence).toBe("PUBLIC_HOLIDAY")
 })
 
 test("should find a regulard day with defaut hours", () => {
-  const { reasonAbsence, nbHours } = fillDay({})(parseISO("2022-07-15"))
+  const { reasonAbsence, nbHours } = fillDayBuilder({})(parseISO("2022-07-15"))
 
   expect(nbHours).toBe(HOURS_REGULAR_DAY)
   expect(reasonAbsence).toBe(undefined)

@@ -1,4 +1,4 @@
-import type { REASONS_ABSENCE } from "@/config/index"
+import type { REASONS_ABSENCE } from "@/config/config"
 
 export type AbsenceType = {
   start: string
@@ -26,4 +26,5 @@ export type HourType = {
   nbHours: number
 }
 
+// Heures explicites effectuées par la garde d'enfant.
 export const hours: HourType[] = []

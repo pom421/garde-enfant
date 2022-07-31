@@ -7,7 +7,7 @@ import { shortFrenchMonthNames } from "@/components/DateContext"
 import { buildDataWeeks } from "@/utils/data-month-builder"
 import { absences, hours } from "@/data/app"
 import { computeWeekHours } from "@/utils/hours-rules"
-import { colorAbsence, LABEL_ABSENCE } from "@/config"
+import { colorAbsence, INFOS_ABSENCE } from "@/config/config"
 
 function monthName(date) {
   return shortFrenchMonthNames[getMonth(date)]
@@ -43,7 +43,7 @@ export function Calendar() {
                   <Box>
                     <Text>{format(day.date, "dd") + " " + monthName(day.date)}</Text>
                     <Text>{day.nbHours ? `${day.nbHours} heures` : ""}</Text>
-                    <Text fontWeight="medium">{day.reasonAbsence && LABEL_ABSENCE[day.reasonAbsence]}</Text>
+                    <Text fontWeight="medium">{day.reasonAbsence && INFOS_ABSENCE[day.reasonAbsence].label}</Text>
                   </Box>
                 </Td>
               ))}

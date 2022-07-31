@@ -1,4 +1,4 @@
-import { CAPACITY_NORMAL_HOURS, CAPACITY_EXTRA_HOURS_25 } from "@/config/index"
+import { CAPACITY_NORMAL_HOURS, CAPACITY_EXTRA_HOURS_25 } from "@/config/config"
 import { inYearMonth, subOneMonth, YearMonthType } from "@/utils/date"
 import { DayType } from "@/utils/data-month-builder"
 
@@ -11,6 +11,10 @@ export type HoursType = {
   capacityNormalHours: number
   capacityExtraHours: number
 }
+const sameMonthPredicate = (yearMonth: YearMonthType) => (day: DayType) => inYearMonth(day.date, yearMonth)
+
+const sameOrPreviousMonthPredicate = (yearMonth: YearMonthType) => (day: DayType) =>
+  inYearMonth(day.date, yearMonth) || inYearMonth(day.date, subOneMonth(yearMonth))
 
 export function computeWeekHours(days: DayType[], yearMonth: YearMonthType): HoursType {
   /*
@@ -30,14 +34,13 @@ export function computeWeekHours(days: DayType[], yearMonth: YearMonthType): Hou
     capacityExtraHours: CAPACITY_EXTRA_HOURS_25,
   }
 
-  const sameMonthPredicate = (day: DayType) => inYearMonth(day.date, yearMonth)
+  hours.totalHours = days
+    .filter(sameOrPreviousMonthPredicate(yearMonth))
+    .reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
 
-  const sameOrPreviousMonthPredicate = (day: DayType) =>
-    inYearMonth(day.date, yearMonth) || inYearMonth(day.date, subOneMonth(yearMonth))
-
-  hours.totalHours = days.filter(sameOrPreviousMonthPredicate).reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
-
-  const totalHoursInWeekSameMonth = days.filter(sameMonthPredicate).reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
+  const totalHoursInWeekSameMonth = days
+    .filter(sameMonthPredicate(yearMonth))
+    .reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
 
   const difference = hours.totalHours - totalHoursInWeekSameMonth
 

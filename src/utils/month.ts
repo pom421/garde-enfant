@@ -13,7 +13,7 @@ type UtilMonthReturnType = {
   mondays: Date[]
 }
 
-export function utilMonth(yearMonth: YearMonthType): UtilMonthReturnType {
+export function helpersForMonth(yearMonth: YearMonthType): UtilMonthReturnType {
   const firstDay = new Date(yearMonth[0], yearMonth[1], 1)
   const lastDay = lastDayOfMonth(firstDay)
   const weeks = eachWeekOfInterval({ start: firstDay, end: lastDay }, { weekStartsOn: 1 }).map((monday) => {
