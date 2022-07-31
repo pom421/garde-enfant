@@ -1,4 +1,4 @@
-export const CAPACITY_NORMAL_HOURS = 46
+export const CAPACITY_NORMAL_HOURS = 40
 export const CAPACITY_EXTRA_HOURS_25 = 8
 
 export const NB_HOURS_FOR_VACATION = 8
