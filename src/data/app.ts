@@ -4,6 +4,8 @@ export const tauxHoraire = 8.51
 
 export const hoursRegularDay = 10
 
+export const contractStartDate = "2021-05-01"
+
 export const absences: AbsenceType[] = [
   {
     start: "2022-02-07",

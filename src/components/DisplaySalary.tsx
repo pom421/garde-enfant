@@ -1,11 +1,12 @@
 import { QuestionOutlineIcon } from "@chakra-ui/icons"
-import { Box, Grid, GridItem, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from "@chakra-ui/react"
+import { Grid, GridItem, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from "@chakra-ui/react"
+import { FunctionComponent } from "react"
 
 import { useDateContext } from "@/components/DateContext"
-import { absences, tauxHoraire } from "@/data/app"
+import { absences, contractStartDate, tauxHoraire } from "@/data/app"
 import { buildDataWeeks } from "@/utils/data-month-builder"
 import { computeWeekHours } from "@/utils/hours-rules"
-import { FunctionComponent } from "react"
+import { formatFrDate } from "@/utils/date"
 
 const tauxHoraire25 = Number((tauxHoraire * 1.25).toFixed(2))
 const tauxHoraire50 = Number((tauxHoraire * 1.5).toFixed(2))
@@ -28,8 +29,19 @@ type NumericData = {
   tooltip?: string
 }
 
+type StringData = {
+  label: string
+  value: string
+  tooltip?: string
+}
+
+const isStringData = (element: StringData | NumericData): element is StringData => {
+  if (typeof element.value === "string") return true
+  return false
+}
+
 type Props = {
-  dataList: NumericData[]
+  dataList: Array<NumericData | StringData>
   gridOptions?: any
 }
 
@@ -46,13 +58,13 @@ const DataGrid: FunctionComponent<Props> = ({
       </GridItem>
       <GridItem w="100%" h="10" textAlign="right">
         {dataList.map((element) => (
-          <Text key={element.label}>{separateDecimal(element.value)[0]}</Text>
+          <Text key={element.label}>{isStringData(element) ? element.value : separateDecimal(element.value)[0]}</Text>
         ))}
       </GridItem>
       <GridItem w="100%" h="10">
         {dataList.map((element) => (
           <Text key={element.label}>
-            .{separateDecimal(element.value)[1]}{" "}
+            {isStringData(element) ? "" : "." + separateDecimal(element.value)[1]}{" "}
             {element.tooltip && (
               <Tooltip label={element.tooltip}>
                 <QuestionOutlineIcon w="3" h="3" />
@@ -90,12 +102,23 @@ export function DisplaySalary() {
   return (
     <Tabs defaultIndex={2} mt="8">
       <TabList>
+        <Tab>Informations générales</Tab>
         <Tab>Taux horaires et salaire</Tab>
         <Tab>Heures du mois</Tab>
         <Tab>Montant du mois</Tab>
       </TabList>
 
       <TabPanels>
+        <TabPanel>
+          <DataGrid
+            dataList={[
+              {
+                label: "Début contrat :",
+                value: formatFrDate(contractStartDate),
+              },
+            ]}
+          />
+        </TabPanel>
         <TabPanel>
           <DataGrid
             dataList={[
