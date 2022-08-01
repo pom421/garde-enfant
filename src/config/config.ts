@@ -15,10 +15,10 @@ export type REASONS_ABSENCE =
 
 export const INFOS_ABSENCE: Record<REASONS_ABSENCE, { label: string; nbHours: number }> = {
   WE: { label: "WE", nbHours: 0 },
-  VACATION: { label: "Congé payé", nbHours: NB_HOURS_FOR_VACATION },
+  VACATION: { label: "Congé payé", nbHours: 0 },
   UNPAID_VACATION: { label: "Congé sans solde", nbHours: 0 },
-  PAID_VACATION: { label: "Congé payé exceptionnel", nbHours: NB_HOURS_FOR_VACATION }, // ex: évènements familiaux, décès d'un proche, absence pour convenances personnelles des parents.
-  PUBLIC_HOLIDAY: { label: "Jour férié", nbHours: NB_HOURS_FOR_VACATION }, // (+10% pour les jours fériés et travaillés)
+  PAID_VACATION: { label: "Congé payé exceptionnel", nbHours: 0 }, // ex: évènements familiaux, décès d'un proche, absence pour convenances personnelles des parents.
+  PUBLIC_HOLIDAY: { label: "Jour férié", nbHours: 0 }, // (+10% pour les jours fériés et travaillés)
   SICKNESS: { label: "Arrêt maladie", nbHours: 0 }, // La salariée reçoit des indemnités de la CPAM.
   MATERNITY: { label: "Congé maternité", nbHours: 0 },
 }

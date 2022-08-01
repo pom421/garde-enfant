@@ -4,12 +4,9 @@ import { DayType } from "@/utils/data-month-builder"
 
 export type HoursType = {
   totalHours: number
-  totalHoursInWeekSameMonth: number
   normalHours: number
   extraHours25: number
   extraHours50: number
-  capacityNormalHours: number
-  capacityExtraHours: number
 }
 const sameMonthPredicate = (yearMonth: YearMonthType) => (day: DayType) => inYearMonth(day.date, yearMonth)
 
@@ -17,53 +14,59 @@ const sameOrPreviousMonthPredicate = (yearMonth: YearMonthType) => (day: DayType
   inYearMonth(day.date, yearMonth) || inYearMonth(day.date, subOneMonth(yearMonth))
 
 export function computeWeekHours(days: DayType[], yearMonth: YearMonthType): HoursType {
-  /*
-    Règles :
-    - si le jour fait partie du mois d'avant, on le prend en compte dans totalHours
-    - si le jour fait partie du mois d'après, on ne le prend pas en compte dans totalHours
-    - on calcule la même chose juste pour les jours du mois en cours, et on compare
-  */
-
-  const hours = {
-    totalHours: 0,
-    totalHoursInWeekSameMonth: 0,
-    normalHours: 0,
-    extraHours25: 0,
-    extraHours50: 0,
-    capacityNormalHours: CAPACITY_NORMAL_HOURS,
-    capacityExtraHours: CAPACITY_EXTRA_HOURS_25,
-  }
-
-  hours.totalHours = days
+  // Total des heures de cette semaine, peu importe si c'est à cheval sur 2 mois.
+  const totalHoursInWeek = days
     .filter(sameOrPreviousMonthPredicate(yearMonth))
     .reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
 
+  // Total des heures de cette semaine, uniquement dans le mois en cours.
   const totalHoursInWeekSameMonth = days
     .filter(sameMonthPredicate(yearMonth))
     .reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
 
-  const difference = hours.totalHours - totalHoursInWeekSameMonth
+  const hoursPreviousMonth = totalHoursInWeek - totalHoursInWeekSameMonth
 
-  const remainingNormalHours = hours.capacityNormalHours - hours.totalHours
+  // Cacul des heures des jours du mois précédents, si c'est le cas.
+  const { normalHours: normalHoursPreviousMonth, extraHours25: extraHours25PreviousMonth } = dispatchHours([
+    CAPACITY_NORMAL_HOURS,
+    CAPACITY_EXTRA_HOURS_25,
+  ])(hoursPreviousMonth)
 
-  if (remainingNormalHours >= 0) {
-    hours.normalHours = hours.totalHours - difference
-    hours.capacityNormalHours -= hours.totalHours
-  } else {
-    hours.normalHours = hours.capacityNormalHours - difference
-    hours.capacityNormalHours = 0
+  // Mise à jour des capacités, si la semaine est à cheval sur 2 mois.
+  const capacities = [
+    CAPACITY_NORMAL_HOURS - normalHoursPreviousMonth,
+    CAPACITY_EXTRA_HOURS_25 - extraHours25PreviousMonth,
+  ] as const
 
-    const remainingExtraHours = hours.capacityExtraHours - Math.abs(remainingNormalHours)
+  return dispatchHours(capacities)(totalHoursInWeekSameMonth)
+}
 
-    if (remainingExtraHours >= 0) {
-      hours.extraHours25 = Math.abs(remainingNormalHours)
-      hours.capacityExtraHours -= Math.abs(remainingNormalHours)
-    } else {
-      hours.extraHours25 = hours.capacityExtraHours
-      hours.capacityExtraHours = 0
+/**
+ * Réparti les heures en 3 catégories : heures normales, heures extra 25%, heures extra 50%.
+ */
+const dispatchHours = (capacities: Readonly<[number, number]>) => (nbHours: number) => {
+  const [maxNormalHours, maxHours25] = capacities
+  const normalHoursRemaining = maxNormalHours - nbHours
+  const hours25Remaining = maxHours25 + normalHoursRemaining
 
-      hours.extraHours50 = Math.abs(remainingExtraHours)
-    }
-  }
-  return hours
+  return normalHoursRemaining >= 0
+    ? {
+        normalHours: nbHours,
+        extraHours25: 0,
+        extraHours50: 0,
+        totalHours: nbHours,
+      }
+    : hours25Remaining >= 0
+    ? {
+        normalHours: maxNormalHours,
+        extraHours25: normalHoursRemaining,
+        extraHours50: 0,
+        totalHours: nbHours,
+      }
+    : {
+        normalHours: maxNormalHours,
+        extraHours25: maxHours25,
+        extraHours50: -hours25Remaining,
+        totalHours: nbHours,
+      }
 }

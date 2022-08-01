@@ -12,8 +12,12 @@ export function assertDate(value) {
 export function displayWeek(dates) {
   for (const date of dates) {
     // eslint-disable-next-line no-console
-    console.log(formatInTimeZone(date, "Europe/Paris", "yyyy-MM-dd"))
+    console.log(formatFrDate(date))
   }
+}
+
+export function formatFrDate(date) {
+  return formatInTimeZone(date, "Europe/Paris", "yyyy-MM-dd")
 }
 
 export const inYearMonth = (date: Date, [year, month]: YearMonthType): boolean =>
