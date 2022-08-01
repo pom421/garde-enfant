@@ -1,5 +1,4 @@
-import type { HoursType } from "@/types/types"
-import type { DayType } from "@/utils/data-month-builder"
+import type { DayType, HoursType } from "@/types/types"
 
 import { CAPACITY_EXTRA_HOURS_25, CAPACITY_NORMAL_HOURS } from "@/config/config"
 import { inYearMonth, subOneMonth, YearMonthType } from "@/utils/date"
