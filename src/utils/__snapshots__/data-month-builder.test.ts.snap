@@ -6,7 +6,8 @@ Array [
     "days": Array [
       Object {
         "date": 2022-01-30T23:00:00.000Z,
-        "nbHours": 5,
+        "nbHours": 0,
+        "reasonAbsence": "VACATION",
       },
       Object {
         "date": 2022-01-31T23:00:00.000Z,
@@ -56,7 +57,7 @@ Array [
       },
       Object {
         "date": 2022-02-09T23:00:00.000Z,
-        "nbHours": 7,
+        "nbHours": 10,
       },
       Object {
         "date": 2022-02-10T23:00:00.000Z,

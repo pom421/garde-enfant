@@ -1,11 +1,12 @@
-import { isWeekend, isWithinInterval, isSameDay, parseISO } from "date-fns"
+import { isWeekend, isWithinInterval, parseISO } from "date-fns"
 
+import type { AbsenceType, REASONS_ABSENCE } from "@/types/types"
+
+import { INFOS_ABSENCE } from "@/config/config"
+import { assertDate, YearMonthType } from "@/utils/date"
 import { helpersForMonth } from "@/utils/month"
 import { isPublicHoliday } from "@/utils/public-holidays"
-import { HOURS_REGULAR_DAY, INFOS_ABSENCE } from "@/config/config"
-import type { REASONS_ABSENCE } from "@/config/config"
-import { assertDate, YearMonthType } from "@/utils/date"
-import { AbsenceType, HourType } from "@/data/app"
+import { hoursRegularDay } from "@/data/app"
 
 export type DayType = {
   date: Date
@@ -16,11 +17,11 @@ export type DayType = {
 type DataWeeksType = { days: DayType[] }[]
 
 // Construction de la structure de données pour le mois.
-export function buildDataWeeks({ hours = [], absences = [] } = { hours: [], absences: [] }) {
+export function buildDataWeeks({ absences = [] } = { absences: [] }) {
   return function (yearMonth: YearMonthType): DataWeeksType {
     const { weeks } = helpersForMonth(yearMonth)
 
-    const fillDay = fillDayBuilder({ hours, absences })
+    const fillDay = fillDayBuilder({ absences })
 
     return weeks.map((week) => ({
       days: week.map((date) => fillDay(date)),
@@ -33,7 +34,7 @@ export function buildDataWeeks({ hours = [], absences = [] } = { hours: [], abse
  *
  * @param {Object} options. hours, la liste des heures modifiées de la garde d'enfant. absences, la liste des absences de la garde d'enfant.
  */
-export function fillDayBuilder({ hours = [], absences = [] }: { hours?: HourType[]; absences?: AbsenceType[] }) {
+export function fillDayBuilder({ absences = [] }: { absences?: AbsenceType[] }) {
   return function (date): { date: Date; reasonAbsence?: REASONS_ABSENCE; nbHours: number } {
     assertDate(date)
 
@@ -52,15 +53,6 @@ export function fillDayBuilder({ hours = [], absences = [] }: { hours?: HourType
         reasonAbsence: "PUBLIC_HOLIDAY",
       }
 
-    // la date a-t-elle des heures explicites ?
-    const [entryHours] = hours.filter((hour) => isSameDay(parseISO(hour.date), date)) // on considère qu'il ne peut pas y avoir 2 entrées pour la même date.
-
-    if (entryHours) {
-      return {
-        date,
-        nbHours: entryHours.nbHours,
-      }
-    }
     // la date est-elle une absence ?
     // eslint-disable-next-line prettier/prettier
     for (const absence of absences) {
@@ -76,7 +68,7 @@ export function fillDayBuilder({ hours = [], absences = [] }: { hours?: HourType
     // par défaut, on ajoute le nombre d'heure standard.
     return {
       date,
-      nbHours: HOURS_REGULAR_DAY,
+      nbHours: hoursRegularDay,
     }
   }
 }

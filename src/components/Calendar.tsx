@@ -5,7 +5,7 @@ import { format, getMonth } from "date-fns"
 import { useDateContext } from "@/components/DateContext"
 import { shortFrenchMonthNames } from "@/components/DateContext"
 import { buildDataWeeks } from "@/utils/data-month-builder"
-import { absences, hours } from "@/data/app"
+import { absences } from "@/data/app"
 import { computeWeekHours } from "@/utils/hours-rules"
 import { colorAbsence, INFOS_ABSENCE } from "@/config/config"
 
@@ -16,7 +16,7 @@ function monthName(date) {
 export function Calendar() {
   const { yearMonth } = useDateContext()
 
-  const weeks = buildDataWeeks({ hours, absences })([yearMonth[0], yearMonth[1]])
+  const weeks = buildDataWeeks({ absences })([yearMonth[0], yearMonth[1]])
 
   return (
     <Table border="1px solid" borderColor="gray.200" textColor="gray.800">

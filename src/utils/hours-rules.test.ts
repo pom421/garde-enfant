@@ -59,29 +59,6 @@ test("Only regular hours", () => {
   `)
 })
 
-test("Update hour for a day", () => {
-  const hours = [
-    {
-      date: "2022-02-02",
-      nbHours: 5,
-    },
-  ]
-
-  const yearMonth = [2022, 1] as const
-
-  const weeks = buildDataWeeks({ hours })(yearMonth)
-  const res = computeWeekHours(weeks[0].days, yearMonth)
-
-  expect(res).toMatchInlineSnapshot(`
-    Object {
-      "extraHours25": -5,
-      "extraHours50": 0,
-      "normalHours": 30,
-      "totalHours": 35,
-    }
-  `)
-})
-
 test("Bug #3 with first week of october 2022", () => {
   const yearMonth = [2022, 9] as const // october 2022
 

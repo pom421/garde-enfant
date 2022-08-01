@@ -1,13 +1,9 @@
-import { CAPACITY_NORMAL_HOURS, CAPACITY_EXTRA_HOURS_25 } from "@/config/config"
-import { inYearMonth, subOneMonth, YearMonthType } from "@/utils/date"
-import { DayType } from "@/utils/data-month-builder"
+import type { HoursType } from "@/types/types"
+import type { DayType } from "@/utils/data-month-builder"
 
-export type HoursType = {
-  totalHours: number
-  normalHours: number
-  extraHours25: number
-  extraHours50: number
-}
+import { CAPACITY_EXTRA_HOURS_25, CAPACITY_NORMAL_HOURS } from "@/config/config"
+import { inYearMonth, subOneMonth, YearMonthType } from "@/utils/date"
+
 const sameMonthPredicate = (yearMonth: YearMonthType) => (day: DayType) => inYearMonth(day.date, yearMonth)
 
 const sameOrPreviousMonthPredicate = (yearMonth: YearMonthType) => (day: DayType) =>

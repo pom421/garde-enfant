@@ -1,6 +1,6 @@
 import { Box, Text, VStack } from "@chakra-ui/react"
 
-import { absences, hours, tauxHoraire } from "@/data/app"
+import { absences, tauxHoraire } from "@/data/app"
 import { useDateContext } from "@/components/DateContext"
 import { buildDataWeeks } from "@/utils/data-month-builder"
 import { computeWeekHours } from "@/utils/hours-rules"
@@ -10,7 +10,7 @@ const tauxHoraire50 = Number((tauxHoraire * 1.5).toFixed(2))
 
 export function DisplaySalary() {
   const { yearMonth } = useDateContext()
-  const weeks = buildDataWeeks({ hours, absences })([yearMonth[0], yearMonth[1]])
+  const weeks = buildDataWeeks({ absences })([yearMonth[0], yearMonth[1]])
 
   const { normalHours, extraHours25, extraHours50 } = weeks
     .map((week) => computeWeekHours(week.days, yearMonth))

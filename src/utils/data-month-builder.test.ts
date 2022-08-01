@@ -1,7 +1,8 @@
-import { HOURS_REGULAR_DAY } from "@/config/config"
-import { AbsenceType } from "@/data/app"
-
 import { parseISO } from "date-fns"
+
+import type { AbsenceType } from "@/types/types"
+
+import { hoursRegularDay } from "@/data/app"
 import { buildDataWeeks, fillDayBuilder } from "./data-month-builder"
 
 test("should find a sunday", () => {
@@ -36,23 +37,13 @@ test("should find a publicHoliday", () => {
 test("should find a regulard day with defaut hours", () => {
   const { reasonAbsence, nbHours } = fillDayBuilder({})(parseISO("2022-07-15"))
 
-  expect(nbHours).toBe(HOURS_REGULAR_DAY)
+  expect(nbHours).toBe(hoursRegularDay)
   expect(reasonAbsence).toBe(undefined)
 })
 
 // build data month tests ---------------------------- //
 
 test("should match snapshot", () => {
-  const hours = [
-    {
-      date: "2022-01-31",
-      nbHours: 5,
-    },
-    {
-      date: "2022-02-10",
-      nbHours: 7,
-    },
-  ]
   const absences = [
     {
       start: "2022-01-30",
@@ -61,7 +52,7 @@ test("should match snapshot", () => {
     },
   ]
 
-  const weeks = buildDataWeeks({ hours, absences })([2022, 1])
+  const weeks = buildDataWeeks({ absences })([2022, 1])
 
   expect(weeks).toMatchSnapshot()
 })

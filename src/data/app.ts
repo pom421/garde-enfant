@@ -1,12 +1,8 @@
-import type { REASONS_ABSENCE } from "@/config/config"
-
-export type AbsenceType = {
-  start: string
-  end: string
-  reason: REASONS_ABSENCE
-}
+import type { AbsenceType } from "@/types/types"
 
 export const tauxHoraire = 8.44
+
+export const hoursRegularDay = 10
 
 export const absences: AbsenceType[] = [
   {
@@ -19,12 +15,9 @@ export const absences: AbsenceType[] = [
     end: "2022-03-04",
     reason: "VACATION",
   },
+  {
+    start: "2022-10-06",
+    end: "2022-10-06",
+    reason: "VACATION",
+  },
 ]
-
-export type HourType = {
-  date: string
-  nbHours: number
-}
-
-// Heures explicites effectuées par la garde d'enfant.
-export const hours: HourType[] = []

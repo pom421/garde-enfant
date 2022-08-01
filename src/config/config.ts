@@ -1,17 +1,7 @@
+import type { REASONS_ABSENCE } from "@/types/types"
+
 export const CAPACITY_NORMAL_HOURS = 40
 export const CAPACITY_EXTRA_HOURS_25 = 8
-
-export const NB_HOURS_FOR_VACATION = 8
-export const HOURS_REGULAR_DAY = 10
-
-export type REASONS_ABSENCE =
-  | "WE"
-  | "VACATION"
-  | "SICKNESS"
-  | "UNPAID_VACATION"
-  | "PAID_VACATION"
-  | "PUBLIC_HOLIDAY"
-  | "MATERNITY"
 
 export const INFOS_ABSENCE: Record<REASONS_ABSENCE, { label: string; nbHours: number }> = {
   WE: { label: "WE", nbHours: 0 },
