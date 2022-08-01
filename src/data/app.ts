@@ -21,8 +21,24 @@ export const absences: AbsenceType[] = [
     reason: "VACATION",
   },
   {
+    start: "2022-05-02",
+    end: "2022-05-06",
+    reason: "VACATION",
+  },
+  {
+    start: "2022-05-20",
+    end: "2022-05-20",
+    reason: "VACATION",
+  },
+  {
+    start: "2022-05-27",
+    end: "2022-05-27",
+    reason: "VACATION",
+  },
+  {
     start: "2022-08-08",
     end: "2022-08-26",
     reason: "VACATION",
   },
+  { start: "2022-12-21", end: "2022-12-27", reason: "VACATION" },
 ]
