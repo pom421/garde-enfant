@@ -19,3 +19,11 @@ export type HoursType = {
   extraHours25: number
   extraHours50: number
 }
+
+export type DayType = {
+  date: Date
+  nbHours: number
+  reasonAbsence?: REASONS_ABSENCE
+}
+
+export type DataWeeksType = Array<{ days: DayType[] }>

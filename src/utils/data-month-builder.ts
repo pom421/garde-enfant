@@ -1,22 +1,14 @@
 import { isWeekend, isWithinInterval, parseISO } from "date-fns"
 
-import type { AbsenceType, REASONS_ABSENCE } from "@/types/types"
+import type { AbsenceType, DataWeeksType, REASONS_ABSENCE } from "@/types/types"
 
 import { INFOS_ABSENCE } from "@/config/config"
+import { hoursRegularDay } from "@/data/app"
 import { assertDate, YearMonthType } from "@/utils/date"
 import { helpersForMonth } from "@/utils/month"
 import { isPublicHoliday } from "@/utils/public-holidays"
-import { hoursRegularDay } from "@/data/app"
 
-export type DayType = {
-  date: Date
-  nbHours: number
-  reasonAbsence?: REASONS_ABSENCE
-}
-
-type DataWeeksType = { days: DayType[] }[]
-
-// Construction de la structure de données pour le mois.
+// Construction de la structure de données pour le mois : tableau représentant les semaines, chaque semaine contenant un tableau de jours.
 export function buildDataWeeks({ absences = [] } = { absences: [] }) {
   return function (yearMonth: YearMonthType): DataWeeksType {
     const { weeks } = helpersForMonth(yearMonth)
@@ -54,7 +46,6 @@ export function fillDayBuilder({ absences = [] }: { absences?: AbsenceType[] }) 
       }
 
     // la date est-elle une absence ?
-    // eslint-disable-next-line prettier/prettier
     for (const absence of absences) {
       if (isWithinInterval(date, { start: parseISO(absence.start), end: parseISO(absence.end) })) {
         return {

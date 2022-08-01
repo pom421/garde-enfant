@@ -7,6 +7,8 @@ import { absences, contractStartDate, tauxHoraire } from "@/data/app"
 import { buildDataWeeks } from "@/utils/data-month-builder"
 import { computeWeekHours } from "@/utils/hours-rules"
 import { formatFrDate } from "@/utils/date"
+import { helpersForMonth } from "@/utils/month"
+import { UNPAID_ABSENCES } from "@/config/config"
 
 const tauxHoraire25 = Number((tauxHoraire * 1.25).toFixed(2))
 const tauxHoraire50 = Number((tauxHoraire * 1.5).toFixed(2))
@@ -80,6 +82,17 @@ const DataGrid: FunctionComponent<Props> = ({
 export function DisplaySalary() {
   const { yearMonth } = useDateContext()
   const weeks = buildDataWeeks({ absences })([yearMonth[0], yearMonth[1]])
+  const { nbBusinessDays } = helpersForMonth(yearMonth)
+
+  let unpaidDays = 0
+
+  for (const week of weeks) {
+    for (const day of week.days) {
+      if (UNPAID_ABSENCES.includes(day.reasonAbsence)) {
+        unpaidDays++
+      }
+    }
+  }
 
   const { normalHours, extraHours25, extraHours50 } = weeks
     .map((week) => computeWeekHours(week.days, yearMonth))
@@ -96,7 +109,8 @@ export function DisplaySalary() {
   const netSalaryBase = Number(((tauxHoraire * 40 * 52) / 12).toFixed(2))
   const extraHours25Cost = Number((extraHours25 * tauxHoraire25).toFixed(2))
   const extraHours50Cost = Number((extraHours50 * tauxHoraire50).toFixed(2))
-  const totalCost = Number((netSalaryBase + extraHours25Cost + extraHours50Cost).toFixed(2))
+  const realSalary = Number(Number((netSalaryBase * (nbBusinessDays - unpaidDays)) / nbBusinessDays).toFixed(2))
+  const totalCost = Number((realSalary + extraHours25Cost + extraHours50Cost).toFixed(2))
   const totalCostPerFamily = Number((Number(totalCost) / 2).toFixed(2))
 
   return (
@@ -160,6 +174,11 @@ export function DisplaySalary() {
                 value: netSalaryBase,
               },
               {
+                label: "Salaire réel (retenue jours non payés) :",
+                value: realSalary,
+                tooltip: `${netSalaryBase} x ${nbBusinessDays - unpaidDays} / ${nbBusinessDays}`,
+              },
+              {
                 label: "Coût heures sup 25% :",
                 value: extraHours25Cost,
                 tooltip: `${extraHours25} x ${tauxHoraire25}`,
@@ -172,7 +191,7 @@ export function DisplaySalary() {
               {
                 label: "Total :",
                 value: totalCost,
-                tooltip: `${netSalaryBase} + ${extraHours25Cost} + ${extraHours50Cost}`,
+                tooltip: `${realSalary} + ${extraHours25Cost} + ${extraHours50Cost}`,
               },
               {
                 label: "Coût par famille :",

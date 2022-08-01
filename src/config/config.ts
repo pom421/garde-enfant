@@ -13,6 +13,9 @@ export const INFOS_ABSENCE: Record<REASONS_ABSENCE, { label: string; nbHours: nu
   MATERNITY: { label: "Congé maternité", nbHours: 0 },
 }
 
+export const PAID_ABSENCES = ["VACATION", "PAID_VACATION", "PUBLIC_HOLIDAY"]
+export const UNPAID_ABSENCES = ["UNPAID_VACATION", "SICKNESS", "MATERNITY"]
+
 export function colorAbsence(reasonAbsence: REASONS_ABSENCE) {
   switch (reasonAbsence) {
     case "WE":

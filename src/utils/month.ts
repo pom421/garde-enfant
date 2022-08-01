@@ -1,4 +1,12 @@
-import { previousMonday, nextSunday, lastDayOfMonth, eachDayOfInterval, eachWeekOfInterval } from "date-fns"
+import {
+  previousMonday,
+  nextSunday,
+  lastDayOfMonth,
+  eachDayOfInterval,
+  eachWeekOfInterval,
+  differenceInBusinessDays,
+  addDays,
+} from "date-fns"
 import { YearMonthType } from "./date"
 
 type UtilMonthReturnType = {
@@ -11,6 +19,7 @@ type UtilMonthReturnType = {
   daysAllWeeks: Date[]
   weeks: Date[][]
   mondays: Date[]
+  nbBusinessDays: number
 }
 
 export function helpersForMonth(yearMonth: YearMonthType): UtilMonthReturnType {
@@ -44,6 +53,7 @@ export function helpersForMonth(yearMonth: YearMonthType): UtilMonthReturnType {
     daysAllWeeks,
     weeks,
     mondays,
+    nbBusinessDays: differenceInBusinessDays(addDays(lastDay, 1), firstDay),
   }
 }
 
