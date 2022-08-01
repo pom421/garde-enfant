@@ -29,7 +29,7 @@ export function Calendar() {
           <Td>Vendredi</Td>
           <Td>Samedi</Td>
           <Td>Dimanche</Td>
-          <Td>Résultat</Td>
+          <Td>Heures hebdomadaires</Td>
         </Tr>
       </Thead>
       <Tbody>

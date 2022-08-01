@@ -1,10 +1,10 @@
-import { Box, Heading, HStack, Text, Tooltip, VStack } from "@chakra-ui/react"
+import { QuestionOutlineIcon } from "@chakra-ui/icons"
+import { Grid, GridItem, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from "@chakra-ui/react"
 
-import { absences, tauxHoraire } from "@/data/app"
 import { useDateContext } from "@/components/DateContext"
+import { absences, tauxHoraire } from "@/data/app"
 import { buildDataWeeks } from "@/utils/data-month-builder"
 import { computeWeekHours } from "@/utils/hours-rules"
-import { BellIcon, QuestionOutlineIcon } from "@chakra-ui/icons"
 
 const tauxHoraire25 = Number((tauxHoraire * 1.25).toFixed(2))
 const tauxHoraire50 = Number((tauxHoraire * 1.5).toFixed(2))
@@ -25,79 +25,91 @@ export function DisplaySalary() {
       { totalHours: 0, normalHours: 0, extraHours25: 0, extraHours50: 0 },
     )
 
-  const normalHoursCost = Number((normalHours * tauxHoraire).toFixed(2))
+  const netSalaryBase = Number(((tauxHoraire * 40 * 52) / 12).toFixed(2))
   const extraHours25Cost = Number((extraHours25 * tauxHoraire25).toFixed(2))
   const extraHours50Cost = Number((extraHours50 * tauxHoraire50).toFixed(2))
-  const totalCost = normalHoursCost + extraHours25Cost + extraHours50Cost
-
-  const netSalaryBase = Number((tauxHoraire * 40 * 52) / 12).toFixed(2)
+  const totalCost = Number((netSalaryBase + extraHours25Cost + extraHours50Cost).toFixed(2))
+  const totalCostPerFamily = Number((Number(totalCost) / 2).toFixed(2))
 
   return (
-    <HStack mt={4}>
-      <VStack
-        p="8"
-        border="1px solid"
-        borderColor="gray.300"
-        width="fit-content"
-        margin="auto"
-        borderRadius="xl"
-        shadow="xl"
-      >
-        <Heading as="h2" size="lg">
-          Rappels
-        </Heading>
-        <Text>Taux horaire : {tauxHoraire}</Text>
-        <Text>
-          Salaire mensuel de base :{netSalaryBase}{" "}
-          <Tooltip label={`${tauxHoraire} €/h x 40 h x 52 semaines / 12 mois`}>
-            <QuestionOutlineIcon w="4" h="4" />
-          </Tooltip>
-        </Text>
-      </VStack>
-      <VStack
-        p="8"
-        border="1px solid"
-        borderColor="gray.300"
-        width="fit-content"
-        margin="auto"
-        borderRadius="xl"
-        shadow="xl"
-      >
-        <Heading as="h2" size="lg">
-          Résumé du mois
-        </Heading>
-        <Text>Heures normales du mois : {normalHours}</Text>
-        <Text>Heures supplémentaires à 25% du mois : {extraHours25}</Text>
-        <Text>Heures supplémentaires à 50% du mois : {extraHours50}</Text>
-      </VStack>
-      <VStack
-        p="8"
-        border="1px solid"
-        borderColor="gray.300"
-        width="fit-content"
-        margin="auto"
-        borderRadius="xl"
-        shadow="xl"
-      >
-        <Heading as="h2" size="lg">
-          Total
-        </Heading>
-        <Text>
-          Coût heures normales : {normalHours} x {tauxHoraire} ={normalHoursCost}
-        </Text>
-        <Text>
-          Coût heures sup 25% : {extraHours25} x {tauxHoraire25} ={extraHours25Cost}
-        </Text>
-        <Text>
-          Coût heures sup 50% : {extraHours50} x {tauxHoraire50} ={extraHours50Cost}
-        </Text>
-        <Text>
-          Total : {normalHoursCost} + {extraHours25Cost} + {extraHours50Cost} ={totalCost}
-        </Text>
-        <Text>
-          Coût par famille : {totalCost} / 2 = {totalCost / 2}
-        </Text>
-      </VStack>
-    </HStack>
+    <Tabs defaultIndex={2} mt="8">
+      <TabList>
+        <Tab>Taux horaires et salaire</Tab>
+        <Tab>Heures du mois</Tab>
+        <Tab>Montant du mois</Tab>
+      </TabList>
+
+      <TabPanels>
+        <TabPanel>
+          <Grid templateColumns="300px 1fr" gap={6}>
+            <GridItem w="100%" textAlign="right">
+              <Text>Taux horaire : </Text>
+              <Text>Salaire mensuel de base : </Text>
+            </GridItem>
+            <GridItem w="100%" h="10">
+              <Text>{tauxHoraire}</Text>
+              <Text>
+                {netSalaryBase}{" "}
+                <Tooltip label={`${tauxHoraire} €/h x 40 h x 52 semaines / 12 mois`}>
+                  <QuestionOutlineIcon w="3" h="3" />
+                </Tooltip>
+              </Text>
+            </GridItem>
+          </Grid>
+        </TabPanel>
+        <TabPanel>
+          <Grid templateColumns="300px 1fr" gap={6}>
+            <GridItem w="100%" textAlign="right">
+              <Text>Heures normales du mois : </Text>
+              <Text>Heures supplémentaires à 25% du mois : </Text>
+              <Text>Heures supplémentaires à 50% du mois :</Text>
+            </GridItem>
+            <GridItem w="100%" h="10">
+              <Text>{normalHours}</Text>
+              <Text>{extraHours25}</Text>
+              <Text>{extraHours50}</Text>
+            </GridItem>
+          </Grid>
+        </TabPanel>
+        <TabPanel>
+          <Grid templateColumns="300px 1fr" gap={6}>
+            <GridItem w="100%" textAlign="right">
+              <Text>Salaire mensuel net : </Text>
+              <Text>Coût heures sup 25% : </Text>
+              <Text>Coût heures sup 50% :</Text>
+              <Text>Total :</Text>
+              <Text>Coût par famille :</Text>
+            </GridItem>
+            <GridItem w="100%" h="10">
+              <Text>{netSalaryBase}</Text>
+              <Text>
+                {extraHours25Cost}{" "}
+                <Tooltip label={`${extraHours25} x ${tauxHoraire25}`}>
+                  <QuestionOutlineIcon w="3" h="3" />
+                </Tooltip>
+              </Text>
+              <Text>
+                {extraHours50Cost}{" "}
+                <Tooltip label={`${extraHours50} x ${tauxHoraire50}`}>
+                  <QuestionOutlineIcon w="3" h="3" />
+                </Tooltip>
+              </Text>
+              <Text>
+                {totalCost}{" "}
+                <Tooltip label={`${netSalaryBase} + ${extraHours25Cost} + ${extraHours50Cost}`}>
+                  <QuestionOutlineIcon w="3" h="3" />
+                </Tooltip>
+              </Text>
+              <Text>
+                {totalCostPerFamily}{" "}
+                <Tooltip label={`${totalCost} / 2`}>
+                  <QuestionOutlineIcon w="3" h="3" />
+                </Tooltip>
+              </Text>
+            </GridItem>
+          </Grid>
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   )
 }
