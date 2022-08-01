@@ -21,6 +21,8 @@ export function colorAbsence(reasonAbsence: REASONS_ABSENCE) {
       return "teal.100"
     case "SICKNESS":
       return "orange.100"
+    case "PUBLIC_HOLIDAY":
+      return "blue.100"
     default:
       return "white"
   }

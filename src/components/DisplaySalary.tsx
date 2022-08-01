@@ -1,9 +1,10 @@
-import { Box, Text, VStack } from "@chakra-ui/react"
+import { Box, Heading, HStack, Text, Tooltip, VStack } from "@chakra-ui/react"
 
 import { absences, tauxHoraire } from "@/data/app"
 import { useDateContext } from "@/components/DateContext"
 import { buildDataWeeks } from "@/utils/data-month-builder"
 import { computeWeekHours } from "@/utils/hours-rules"
+import { BellIcon, QuestionOutlineIcon } from "@chakra-ui/icons"
 
 const tauxHoraire25 = Number((tauxHoraire * 1.25).toFixed(2))
 const tauxHoraire50 = Number((tauxHoraire * 1.5).toFixed(2))
@@ -29,8 +30,10 @@ export function DisplaySalary() {
   const extraHours50Cost = Number((extraHours50 * tauxHoraire50).toFixed(2))
   const totalCost = normalHoursCost + extraHours25Cost + extraHours50Cost
 
+  const netSalaryBase = Number((tauxHoraire * 40 * 52) / 12).toFixed(2)
+
   return (
-    <Box mt={4}>
+    <HStack mt={4}>
       <VStack
         p="8"
         border="1px solid"
@@ -40,10 +43,45 @@ export function DisplaySalary() {
         borderRadius="xl"
         shadow="xl"
       >
+        <Heading as="h2" size="lg">
+          Rappels
+        </Heading>
+        <Text>Taux horaire : {tauxHoraire}</Text>
+        <Text>
+          Salaire mensuel de base :{netSalaryBase}{" "}
+          <Tooltip label={`${tauxHoraire} €/h x 40 h x 52 semaines / 12 mois`}>
+            <QuestionOutlineIcon w="4" h="4" />
+          </Tooltip>
+        </Text>
+      </VStack>
+      <VStack
+        p="8"
+        border="1px solid"
+        borderColor="gray.300"
+        width="fit-content"
+        margin="auto"
+        borderRadius="xl"
+        shadow="xl"
+      >
+        <Heading as="h2" size="lg">
+          Résumé du mois
+        </Heading>
         <Text>Heures normales du mois : {normalHours}</Text>
         <Text>Heures supplémentaires à 25% du mois : {extraHours25}</Text>
         <Text>Heures supplémentaires à 50% du mois : {extraHours50}</Text>
-        <Text>Taux horaire : {tauxHoraire}</Text>
+      </VStack>
+      <VStack
+        p="8"
+        border="1px solid"
+        borderColor="gray.300"
+        width="fit-content"
+        margin="auto"
+        borderRadius="xl"
+        shadow="xl"
+      >
+        <Heading as="h2" size="lg">
+          Total
+        </Heading>
         <Text>
           Coût heures normales : {normalHours} x {tauxHoraire} ={normalHoursCost}
         </Text>
@@ -60,6 +98,6 @@ export function DisplaySalary() {
           Coût par famille : {totalCost} / 2 = {totalCost / 2}
         </Text>
       </VStack>
-    </Box>
+    </HStack>
   )
 }
