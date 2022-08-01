@@ -1,13 +1,69 @@
 import { QuestionOutlineIcon } from "@chakra-ui/icons"
-import { Grid, GridItem, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from "@chakra-ui/react"
+import { Box, Grid, GridItem, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from "@chakra-ui/react"
 
 import { useDateContext } from "@/components/DateContext"
 import { absences, tauxHoraire } from "@/data/app"
 import { buildDataWeeks } from "@/utils/data-month-builder"
 import { computeWeekHours } from "@/utils/hours-rules"
+import { FunctionComponent } from "react"
 
 const tauxHoraire25 = Number((tauxHoraire * 1.25).toFixed(2))
 const tauxHoraire50 = Number((tauxHoraire * 1.5).toFixed(2))
+
+/**
+ * Utility to separate the number part and the decimal part, in order to display it in UI with alignment.
+ *
+ * @param decimalNumber
+ * @returns a tuple with the number part and the decimal part
+ */
+function separateDecimal(decimalNumber: number): [number, string] {
+  const int = Math.floor(decimalNumber)
+  const dec = Math.round((decimalNumber - int) * 100)
+  return [int, String(dec).padStart(2, "0")]
+}
+
+type NumericData = {
+  label: string
+  value: number
+  tooltip?: string
+}
+
+type Props = {
+  dataList: NumericData[]
+  gridOptions?: any
+}
+
+const DataGrid: FunctionComponent<Props> = ({
+  dataList,
+  gridOptions = { templateColumns: "300px 100px 50px", gap: 0 },
+}) => {
+  return (
+    <Grid {...gridOptions}>
+      <GridItem w="100%" textAlign="right">
+        {dataList.map((element) => (
+          <Text key={element.label}>{element.label}</Text>
+        ))}
+      </GridItem>
+      <GridItem w="100%" h="10" textAlign="right">
+        {dataList.map((element) => (
+          <Text key={element.label}>{separateDecimal(element.value)[0]}</Text>
+        ))}
+      </GridItem>
+      <GridItem w="100%" h="10">
+        {dataList.map((element) => (
+          <Text key={element.label}>
+            .{separateDecimal(element.value)[1]}{" "}
+            {element.tooltip && (
+              <Tooltip label={element.tooltip}>
+                <QuestionOutlineIcon w="3" h="3" />
+              </Tooltip>
+            )}
+          </Text>
+        ))}
+      </GridItem>
+    </Grid>
+  )
+}
 
 export function DisplaySalary() {
   const { yearMonth } = useDateContext()
@@ -41,73 +97,67 @@ export function DisplaySalary() {
 
       <TabPanels>
         <TabPanel>
-          <Grid templateColumns="300px 1fr" gap={6}>
-            <GridItem w="100%" textAlign="right">
-              <Text>Taux horaire : </Text>
-              <Text>Salaire mensuel de base : </Text>
-            </GridItem>
-            <GridItem w="100%" h="10">
-              <Text>{tauxHoraire}</Text>
-              <Text>
-                {netSalaryBase}{" "}
-                <Tooltip label={`${tauxHoraire} €/h x 40 h x 52 semaines / 12 mois`}>
-                  <QuestionOutlineIcon w="3" h="3" />
-                </Tooltip>
-              </Text>
-            </GridItem>
-          </Grid>
+          <DataGrid
+            dataList={[
+              {
+                label: "Taux horaire :",
+                value: tauxHoraire,
+              },
+              {
+                label: "Salaire mensuel de base :",
+                value: netSalaryBase,
+                tooltip: `${tauxHoraire} €/h x 40 h x 52 semaines / 12 mois`,
+              },
+            ]}
+          />
         </TabPanel>
         <TabPanel>
-          <Grid templateColumns="300px 1fr" gap={6}>
-            <GridItem w="100%" textAlign="right">
-              <Text>Heures normales du mois : </Text>
-              <Text>Heures supplémentaires à 25% du mois : </Text>
-              <Text>Heures supplémentaires à 50% du mois :</Text>
-            </GridItem>
-            <GridItem w="100%" h="10">
-              <Text>{normalHours}</Text>
-              <Text>{extraHours25}</Text>
-              <Text>{extraHours50}</Text>
-            </GridItem>
-          </Grid>
+          <DataGrid
+            dataList={[
+              {
+                label: "Heures normales du mois :",
+                value: normalHours,
+              },
+              {
+                label: "Heures supplémentaires à 25% du mois :",
+                value: extraHours25,
+              },
+              {
+                label: "Heures supplémentaires à 50% du mois :",
+                value: extraHours50,
+              },
+            ]}
+          />
         </TabPanel>
         <TabPanel>
-          <Grid templateColumns="300px 1fr" gap={6}>
-            <GridItem w="100%" textAlign="right">
-              <Text>Salaire mensuel net : </Text>
-              <Text>Coût heures sup 25% : </Text>
-              <Text>Coût heures sup 50% :</Text>
-              <Text>Total :</Text>
-              <Text>Coût par famille :</Text>
-            </GridItem>
-            <GridItem w="100%" h="10">
-              <Text>{netSalaryBase}</Text>
-              <Text>
-                {extraHours25Cost}{" "}
-                <Tooltip label={`${extraHours25} x ${tauxHoraire25}`}>
-                  <QuestionOutlineIcon w="3" h="3" />
-                </Tooltip>
-              </Text>
-              <Text>
-                {extraHours50Cost}{" "}
-                <Tooltip label={`${extraHours50} x ${tauxHoraire50}`}>
-                  <QuestionOutlineIcon w="3" h="3" />
-                </Tooltip>
-              </Text>
-              <Text>
-                {totalCost}{" "}
-                <Tooltip label={`${netSalaryBase} + ${extraHours25Cost} + ${extraHours50Cost}`}>
-                  <QuestionOutlineIcon w="3" h="3" />
-                </Tooltip>
-              </Text>
-              <Text>
-                {totalCostPerFamily}{" "}
-                <Tooltip label={`${totalCost} / 2`}>
-                  <QuestionOutlineIcon w="3" h="3" />
-                </Tooltip>
-              </Text>
-            </GridItem>
-          </Grid>
+          <DataGrid
+            dataList={[
+              {
+                label: "Salaire mensuel net :",
+                value: netSalaryBase,
+              },
+              {
+                label: "Coût heures sup 25% :",
+                value: extraHours25Cost,
+                tooltip: `${extraHours25} x ${tauxHoraire25}`,
+              },
+              {
+                label: "Coût heures sup 50% :",
+                value: extraHours50Cost,
+                tooltip: `${extraHours50} x ${tauxHoraire50}`,
+              },
+              {
+                label: "Total :",
+                value: totalCost,
+                tooltip: `${netSalaryBase} + ${extraHours25Cost} + ${extraHours50Cost}`,
+              },
+              {
+                label: "Coût par famille :",
+                value: totalCostPerFamily,
+                tooltip: `${totalCost} / 2`,
+              },
+            ]}
+          />
         </TabPanel>
       </TabPanels>
     </Tabs>
